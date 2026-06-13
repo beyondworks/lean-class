@@ -1,0 +1,28 @@
+# 시크릿 / 환경변수 (방어 — 실수로라도 커밋되지 않도록)
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+credentials*.json
+secrets*.json
+
+# 런타임 상태 / 캐시 (개인 흔적)
+.omc/
+.playwright-mcp/
+.claude/settings.local.json
+
+# 시스템 / 빌드 산출물
+.DS_Store
+__pycache__/
+*.pyc
+node_modules/
+*.log
+*.tmp
+
+# 단, MCP 키 placeholder 안내 파일은 포함
+!.env.example

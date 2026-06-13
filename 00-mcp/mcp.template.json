@@ -1,0 +1,66 @@
+{
+  "_README": "이 파일은 Claude Code MCP 설정 템플릿입니다. <YOUR_...> 자리에 본인 키를 직접 넣은 뒤, 내용을 프로젝트 루트의 .mcp.json 또는 ~/.claude.json 의 mcpServers 에 병합하세요. 키 발급처는 .env.example 와 README.md 참고. 로컬 설치가 필요한 MCP(code-review-graph, mcp-obsidian, n8n-mcp, ui-inspector, octo-browser, pencil)는 여기에 없습니다 — README.md 의 '고급: 로컬 의존 MCP' 절을 보세요.",
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "shadcn-ui": {
+      "command": "npx",
+      "args": ["-y", "@jpisnice/shadcn-ui-mcp-server"]
+    },
+    "ui-expert": {
+      "command": "npx",
+      "args": ["-y", "@johndoe20012/ui-expert-mcp"]
+    },
+    "design-systems": {
+      "type": "http",
+      "url": "https://design-systems-mcp.southleft.com/mcp"
+    },
+    "stitch": {
+      "command": "npx",
+      "args": ["@_davideast/stitch-mcp", "proxy"]
+    },
+    "linear": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.linear.app/sse"],
+      "_note": "Linear 는 브라우저 OAuth 로 인증합니다. 첫 실행 시 로그인 창이 뜹니다. API 키 불필요."
+    },
+    "hyperbrowser": {
+      "command": "npx",
+      "args": ["-y", "hyperbrowser-mcp"],
+      "env": {
+        "HYPERBROWSER_API_KEY": "<YOUR_HYPERBROWSER_API_KEY>"
+      }
+    },
+    "magic": {
+      "command": "npx",
+      "args": ["-y", "@21st-dev/magic"],
+      "env": {
+        "TWENTYFIRST_API_KEY": "<YOUR_21ST_MAGIC_API_KEY>"
+      }
+    },
+    "testsprite": {
+      "command": "npx",
+      "args": ["@testsprite/testsprite-mcp@latest"],
+      "env": {
+        "API_KEY": "<YOUR_TESTSPRITE_API_KEY>"
+      }
+    },
+    "notion": {
+      "command": "npx",
+      "args": ["-y", "@notionhq/notion-mcp-server"],
+      "env": {
+        "OPENAPI_MCP_HEADERS": "{\"Authorization\":\"Bearer <YOUR_NOTION_INTEGRATION_TOKEN>\",\"Notion-Version\":\"2022-06-28\"}"
+      }
+    }
+  }
+}

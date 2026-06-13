@@ -1,0 +1,21 @@
+{
+  "name": "claude-watch",
+  "version": "0.1.0",
+  "description": "Turn any video into a section-by-section study-notes markdown file with embedded screenshots and a timestamped transcript.",
+  "homepage": "https://github.com/devinilabs/claude-watch",
+  "license": "MIT",
+  "keywords": ["video", "lecture", "tutorial", "notes", "transcript", "ffmpeg", "yt-dlp"],
+  "skills": [
+    {
+      "name": "claude-watch",
+      "path": "."
+    }
+  ],
+  "commands": [
+    {
+      "name": "claude-watch",
+      "path": "commands/claude-watch.md"
+    }
+  ],
+  "hooks": "hooks/hooks.json"
+}

@@ -1,0 +1,291 @@
+{
+  "name": "Slack Bot Template (Ack-First)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "your-webhook-path",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Slack Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "placeholder-id"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || $input.first().json;\n\n// Slack URL verification challenge\nif (body.type === 'url_verification' && body.challenge) {\n  return [{\n    json: {\n      isChallenge: true,\n      challenge: body.challenge\n    }\n  }];\n}\n\nconst event = body.event || {};\n\n// Filter Bot Messages\nif (event.bot_id || !event.text) {\n  return [{\n    json: {\n      isChallenge: false,\n      skip: true\n    }\n  }];\n}\n\n// Filter Retries\nconst headers = $input.first().json.headers || {};\nif (headers['x-slack-retry-num'] || headers['X-Slack-Retry-Num']) {\n  return [{\n    json: {\n      isChallenge: false,\n      skip: true\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    isChallenge: false,\n    skip: false,\n    message: event.text,\n    channel: event.channel,\n    user: event.user,\n    event_id: body.event_id || ''\n  }\n}];"
+      },
+      "id": "process-challenge",
+      "name": "Process Challenge & Filter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.isChallenge }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-challenge",
+      "name": "Is Challenge?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.challenge }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/plain"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-challenge",
+      "name": "Respond Challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [860, 100]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition2",
+              "leftValue": "={{ $json.skip }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-skip",
+      "name": "Is Valid Message?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [860, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {}
+      },
+      "id": "ack-success",
+      "name": "Ack (200 OK)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1080, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Prepare command or logic here\nconst data = $('Process Challenge & Filter').first().json;\nconst msg = data.message || '';\nconst user = data.user || 'unknown';\nconst channel = data.channel || 'unknown';\n\n// Base64 encode to safely pass to shell\nconst b64 = Buffer.from(msg).toString('base64');\n\n// Example command: calling a python script\n// const cmd = `python3 /path/to/script.py \"${b64}\"`;\n\nreturn [{ json: { msg, b64, channel, user } }];"
+      },
+      "id": "prepare-logic",
+      "name": "Prepare Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1080, 300]
+    },
+    {
+      "parameters": {
+        "command": "echo \"Received: {{ $json.msg }}\"",
+        "cwd": "/tmp"
+      },
+      "id": "execute-ssh",
+      "name": "Execute a command",
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [1300, 300],
+      "notes": "Executes commands via SSH (often localhost). Preferred over the deprecated 'Execute Command' node."
+    },
+    {
+      "parameters": {
+        "jsCode": "const stdout = $input.first().json.stdout || '';\nconst prevData = $('Process Challenge & Filter').first().json;\n\nreturn [{\n  json: {\n    response: `Processed: ${stdout.trim()}`,\n    channel: prevData.channel\n  }\n}];"
+      },
+      "id": "parse-response",
+      "name": "Parse Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1520, 300]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.channel }}"
+        },
+        "text": "={{ $json.response }}",
+        "otherOptions": {},
+        "operation": "post"
+      },
+      "id": "slack-reply",
+      "name": "Reply to Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [1740, 300],
+      "webhookId": "placeholder-slack-id",
+      "credentials": {
+        "slackApi": {
+          "id": "",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {}
+      },
+      "id": "final-ack",
+      "name": "Final Ack",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1960, 300]
+    }
+  ],
+  "connections": {
+    "Slack Webhook": {
+      "main": [
+        [
+          {
+            "node": "Process Challenge & Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Challenge & Filter": {
+      "main": [
+        [
+          {
+            "node": "Is Challenge?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Challenge?": {
+      "main": [
+        [
+          {
+            "node": "Respond Challenge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Valid Message?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Valid Message?": {
+      "main": [
+        [
+          {
+            "node": "Prepare Logic",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ack (200 OK)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Logic": {
+      "main": [
+        [
+          {
+            "node": "Execute Command (Optional)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command (Optional)": {
+      "main": [
+        [
+          {
+            "node": "Parse Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Response": {
+      "main": [
+        [
+          {
+            "node": "Reply to Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply to Slack": {
+      "main": [
+        [
+          {
+            "node": "Final Ack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

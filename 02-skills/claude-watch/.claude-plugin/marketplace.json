@@ -1,0 +1,16 @@
+{
+  "name": "claude-watch",
+  "owner": {
+    "name": "devinilabs",
+    "url": "https://github.com/devinilabs"
+  },
+  "plugins": [
+    {
+      "name": "claude-watch",
+      "source": ".",
+      "description": "Watch a tutorial/lecture video and produce structured study notes",
+      "version": "0.1.0",
+      "category": "productivity"
+    }
+  ]
+}
