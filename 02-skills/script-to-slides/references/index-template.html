@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>제목 — 부제</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbit&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"><!-- = references/assets/theme.css 복사본 -->
+</head>
+<body>
+<div class="stage">
+  <div class="progress" id="prog"></div>
+  <div class="counter"><b id="cnow">01</b> / <span id="ctot">00</span></div>
+  <div class="viewport">
+    <div class="track" id="track">
+
+      <!-- ① 표지 (center) — 이미지 배경 쓸 땐 .bg>img + .scrim -->
+      <section class="slide">
+        <div class="bg ph"></div><div class="scrim"></div>
+        <div class="overlay center">
+          <div class="eyebrow">아이브로 / 컨텍스트</div>
+          <h1 class="title">큰 제목 첫 줄<br><span class="g">강조 둘째 줄</span></h1>
+        </div>
+      </section>
+
+      <!-- ② 개념 예고 (pills) -->
+      <section class="slide">
+        <div class="bg ph"></div><div class="scrim"></div>
+        <div class="overlay">
+          <div class="eyebrow">오늘의 약속</div>
+          <h2 class="head">딱 N가지만<br><span class="g">잡으면 됩니다</span></h2>
+          <div class="pills">
+            <div class="pill"><span>개념A</span><span class="ar">→</span><span class="d">뜻 <span class="g">강조</span></span></div>
+            <div class="pill"><span>개념B</span><span class="ar">→</span><span class="d">뜻 <span class="g">강조</span></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ③ 다이어그램 (split: 좌 텍스트 / 우 SVG) — svg-diagrams.md 참조 -->
+      <section class="slide">
+        <div class="bg ph"></div><div class="scrim full"></div>
+        <div class="overlay split">
+          <div class="col-l">
+            <div class="eyebrow">소제목</div>
+            <h2 class="head">핵심 메시지<br><span class="g">두 줄</span></h2>
+            <p class="lead">보조 설명 한두 문장. <span class="g">핵심 수치/용어</span> 강조.</p>
+          </div>
+          <svg class="dg" viewBox="0 0 600 360"><!-- svg-diagrams.md 의 박스맵/흐름/U자 패턴 --></svg>
+        </div>
+      </section>
+
+      <!-- ④ Before / After (cmp) -->
+      <section class="slide">
+        <div class="bg ph"></div><div class="scrim full"></div>
+        <div class="overlay">
+          <div class="eyebrow">대비</div>
+          <h2 class="head">차이가 <span class="g">보이시나요?</span></h2>
+          <div class="cmp">
+            <div class="pan bad"><span class="tag">✕ 나쁜 방식</span><p>왜 안 되는지 한 문장.</p></div>
+            <div class="pan good"><span class="tag">✓ 좋은 방식</span><p>왜 되는지 <span class="g">강조</span> 한 문장.</p></div>
+          </div>
+          <p class="takeaway">한 줄 결론.</p>
+        </div>
+      </section>
+
+      <!-- ⑤ 3-up 카드 -->
+      <section class="slide">
+        <div class="bg ph"></div><div class="scrim full"></div>
+        <div class="overlay">
+          <div class="eyebrow">분해</div>
+          <h2 class="head">세 가지로 <span class="g">나눠 봅니다</span></h2>
+          <div class="cards3">
+            <div class="c"><h4>① 제목</h4><p>설명 한 문장.</p></div>
+            <div class="c"><h4>② 제목</h4><p>설명 한 문장.</p></div>
+            <div class="c"><h4>③ 제목</h4><p>설명 한 문장.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ⑥ 정리 (maplist) -->
+      <section class="slide">
+        <div class="bg ph"></div><div class="scrim full"></div>
+        <div class="overlay">
+          <div class="eyebrow">정리</div>
+          <h2 class="head">그림 하나, <span class="g">다 채웠습니다</span></h2>
+          <ul class="maplist">
+            <li><span class="f">항목</span><span class="a">→</span><span class="t">요약 <span class="g">강조</span></span></li>
+            <li><span class="f">항목</span><span class="a">→</span><span class="t">요약 <span class="g">강조</span></span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ⑦ 상세페이지 포맷 (.slide.detail — 사진X 플랫 다크, 고밀도. 전환/스펙 섹션용) -->
+      <section class="slide detail">
+        <div class="overlay">
+          <div class="eyebrow">섹션 라벨</div>
+          <h2 class="head">상세 정보 <span class="g">고밀도</span></h2>
+          <div class="cards4">
+            <div class="c"><h4>A</h4><p>짧은 설명.</p></div>
+            <div class="c"><h4>B</h4><p>짧은 설명.</p></div>
+            <div class="c"><h4>C</h4><p>짧은 설명.</p></div>
+            <div class="c"><h4>D</h4><p>짧은 설명.</p></div>
+          </div>
+          <p class="takeaway">하단 한 줄.</p>
+        </div>
+      </section>
+
+      <!-- ⑧ FAQ (질문 선제 차단) -->
+      <section class="slide detail">
+        <div class="overlay">
+          <div class="eyebrow">자주 묻는 질문</div>
+          <h2 class="head"><span class="g">궁금하실 만한 것들</span></h2>
+          <ul class="faq">
+            <li><b>질문?</b><span>답변 한 문장.</span></li>
+            <li><b>질문?</b><span>답변 한 문장.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ⑨ CTA -->
+      <section class="slide">
+        <div class="bg ph"></div><div class="scrim"></div>
+        <div class="overlay">
+          <div class="eyebrow">지금 할 일</div>
+          <h2 class="head">행동 <span class="g">유도 문구</span></h2>
+          <a class="cta" href="#">버튼 텍스트 → 링크</a>
+          <p class="cta-sub">보조 안내.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+  <div class="deck-btns">
+    <button id="prBtn" class="dbtn" title="발표자 모드 (S)" aria-label="발표자 모드">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+    </button>
+    <button id="fsBtn" class="dbtn" title="전체화면 (F)" aria-label="전체화면">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+  </div>
+  <div class="dots" id="dots"></div>
+</div>
+<script src="carousel.js"></script>
+<!-- 발표자 노트 쓸 때만: <script src="notes.js"></script> 는 presenter.html 에서 로드 -->
+</body>
+</html>

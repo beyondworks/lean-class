@@ -36,7 +36,7 @@ bash lean-class/install.sh
 | 1 | `02-skills/` → `~/.claude/skills/` 복사 (기존 동명은 `.bak` 백업) |
 | 2 | `03-commands/` → `~/.claude/commands/` |
 | 3 | `04-agents/` → `~/.claude/agents/` |
-| 4 | 플러그인 25개 일괄 설치 (`claude` CLI 있을 때) |
+| 4 | 플러그인 27개 일괄 설치 (`claude` CLI 있을 때) |
 | 5 | 키 불필요한 MCP 자동 등록 + 키 필요한 MCP 안내 |
 
 안전: 기존 파일은 덮어쓰지 않고 백업합니다. `rm -rf` 없음. 시크릿 미포함.
@@ -60,8 +60,8 @@ lean-class/
 ├── PACKAGE_MANIFEST.md    ← 전체 패키징 목록 표
 ├── 00-mcp/                ← MCP 설정 템플릿 + 가이드
 ├── 01-plugins/            ← 플러그인 설치 스크립트 + 가이드
-├── 02-skills/             ← 스킬 108개 (사용설명서 + 구동 자산)
-├── 03-commands/           ← 슬래시 커맨드 27개
+├── 02-skills/             ← 스킬 111개 (사용설명서 + 구동 자산)
+├── 03-commands/           ← 슬래시 커맨드 29개
 ├── 04-agents/             ← 전문 에이전트 22개
 └── 05-omc/                ← oh-my-claudecode 안내
 ```
@@ -71,9 +71,9 @@ lean-class/
 | 카테고리 | 개수 |
 |---|---:|
 | MCP 서버 | 18 |
-| 플러그인 | 25 |
-| 스킬 | 108 |
-| 슬래시 커맨드 | 27 |
+| 플러그인 | 27 |
+| 스킬 | 111 |
+| 슬래시 커맨드 | 29 |
 | 에이전트 | 22 |
 
 전체 목록은 `PACKAGE_MANIFEST.md` 를 보세요.

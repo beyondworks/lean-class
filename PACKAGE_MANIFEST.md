@@ -7,12 +7,19 @@
 | 카테고리 | 포함 | 제외 | 폴더 |
 |---|---:|---:|---|
 | MCP 서버 | 18 | 3 | `00-mcp/` |
-| 플러그인 | 25 | 0 | `01-plugins/` |
-| 스킬 | 108 | 7 | `02-skills/` |
-| 슬래시 커맨드 | 27 | 2 | `03-commands/` |
+| 플러그인 | 27 | 0 | `01-plugins/` |
+| 스킬 | 111 | 7 | `02-skills/` |
+| 슬래시 커맨드 | 29 | 2 | `03-commands/` |
 | 에이전트 | 22 | (보관 레거시 97) | `04-agents/` |
 
-**보안·개인정보 상태**: 실 시크릿 0 · `.env` 실파일 0 · 개인 식별자 0 · 개인 절대경로 0 · 깨진 링크 0 · **노하우 references 0** (총 542 파일 / 13MB)
+**보안·개인정보 상태**: 실 시크릿 0 · `.env` 실파일 0 · 개인 식별자 0 · 개인 절대경로 0 · 깨진 링크 0 · **노하우 references 0**
+
+### 2026-07-07 갱신
+- 마켓플레이스 +2: **gptaku-plugins**(`fivetaku/gptaku_plugins`) · **pixelrag-plugins**(`StarTrail-org/PixelRAG`)
+- 플러그인 +2: **insane-search ★**(차단 사이트 적응형 접근·WAF 우회) · **pixelbrowse**
+- 스킬 +3: **script-to-slides**(대본→16:9 캐러셀 슬라이드) · **model-ab-test**(모델 비교 관찰·로그) · **video-content-visuals**(영상 비주얼 일관 생산)
+- 커맨드 +2: **easy**(비전문가용 쉬운 설명) · **creator-persona-clone**
+- 개인 볼트 인프라 의존분(wiki-autolink·skill-proposal)은 공개 킷 정책상 제외
 
 > **핵심 방침**: 각 스킬은 사용설명서(`SKILL.md`) + 구동 자산(`data`/`scripts`/`resources`)만 남기고, 강사가 세션에서 축적한 노하우 폴더(`references/`)는 전부 제거했습니다.
 

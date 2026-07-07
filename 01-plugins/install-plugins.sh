@@ -16,6 +16,8 @@ markets=(
   "revfactory/harness"                   # harness
   "heygen-com/hyperframes"               # hyperframes
   "openai/codex-plugin-cc"               # codex
+  "fivetaku/gptaku_plugins"              # gptaku — insane-search 등 ★
+  "StarTrail-org/PixelRAG"               # pixelrag — pixelbrowse
 )
 for m in "${markets[@]}"; do
   echo "  + marketplace: $m"
@@ -51,6 +53,8 @@ plugins=(
   "harness@harness-marketplace"
   "hyperframes@hyperframes"
   "codex@openai-codex"
+  "insane-search@gptaku-plugins"         # ★ 차단 사이트 적응형 접근 (WAF 우회)
+  "pixelbrowse@pixelrag-plugins"         # 픽셀 기반 브라우즈/스크린샷
 )
 for p in "${plugins[@]}"; do
   echo "  + install: $p"

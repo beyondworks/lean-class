@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>발표자 모드 — AI 에이전트 입문 웨비나</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="presenter.css">
+</head>
+<body>
+  <header class="pbar">
+    <div class="grp">
+      <span class="ptitle">발표자 모드</span>
+      <span class="pcount"><b id="pnow">1</b> / <span id="ptot">32</span></span>
+    </div>
+    <div class="grp center">
+      <button id="pPrev" class="pbtn">‹ 이전</button>
+      <button id="pNext" class="pbtn primary">다음 ›</button>
+    </div>
+    <div class="grp right">
+      <span class="ptimer" id="ptimer">00:00</span>
+      <button id="ptReset" class="pbtn ghost" title="타이머 리셋">리셋</button>
+      <button id="audBtn" class="pbtn ghost">청중 창 열기</button>
+    </div>
+  </header>
+
+  <main class="pmain">
+    <section class="pcur">
+      <div class="plabel">현재 <span class="dim">(청중 화면과 동기화)</span></div>
+      <div class="pframe"><iframe id="curFrame" src="index.html?embed=1&offset=0" title="현재 슬라이드"></iframe></div>
+    </section>
+
+    <aside class="pside">
+      <div class="pnext">
+        <div class="plabel">다음</div>
+        <div class="pframe"><iframe id="nextFrame" src="index.html?embed=1&offset=1" title="다음 슬라이드"></iframe></div>
+      </div>
+
+      <div class="pnotes">
+        <div class="pnotes-bar">
+          <span class="plabel">발표자 노트</span>
+          <span class="tools">
+            <button id="nMinus" class="pbtn ghost sm" title="글자 작게">A−</button>
+            <button id="nPlus" class="pbtn ghost sm" title="글자 크게">A+</button>
+            <button id="nReset" class="pbtn ghost sm" title="이 슬라이드 노트를 기본 스크립트로 되돌리기">기본값</button>
+            <span id="saveState" class="savestate">저장됨</span>
+          </span>
+        </div>
+        <textarea id="notes" placeholder="이 슬라이드의 발표 스크립트를 적으세요… (자동 저장)"></textarea>
+      </div>
+    </aside>
+  </main>
+
+  <script src="notes.js"></script>
+  <script src="presenter.js"></script>
+</body>
+</html>
