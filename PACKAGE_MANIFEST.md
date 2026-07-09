@@ -8,11 +8,15 @@
 |---|---:|---:|---|
 | MCP 서버 | 18 | 3 | `00-mcp/` |
 | 플러그인 | 27 | 0 | `01-plugins/` |
-| 스킬 | 111 | 7 | `02-skills/` |
+| 스킬 | 113 | 7 | `02-skills/` |
 | 슬래시 커맨드 | 29 | 2 | `03-commands/` |
 | 에이전트 | 22 | (보관 레거시 97) | `04-agents/` |
 
 **보안·개인정보 상태**: 실 시크릿 0 · `.env` 실파일 0 · 개인 식별자 0 · 개인 절대경로 0 · 깨진 링크 0 · **노하우 references 0**
+
+### 2026-07-09 갱신
+- 스킬 +2: **coupang-review-crawler**(쿠팡 리뷰 대량 크롤 + 주제별 그룹화·평점 파티션·xlsx) · **instagram-post-crawler**(인스타 공개 게시물 수집 — 계정 피드/해시태그, 공개만·best-effort) — 둘 다 insane-search 백엔드(차단·로그인월 우회) 기반
+- (커맨드/플러그인 신규 없음. board·boot·inbox 등 로컬 org-loop 인프라는 개인 도구라 공개 킷 제외)
 
 ### 2026-07-07 갱신
 - 마켓플레이스 +2: **gptaku-plugins**(`fivetaku/gptaku_plugins`) · **pixelrag-plugins**(`StarTrail-org/PixelRAG`)
@@ -58,7 +62,7 @@ code-review-graph · mcp-obsidian · n8n-mcp · ui-inspector · octo-browser · 
 
 ---
 
-## 3. 독립 스킬 (`02-skills/`) — 108개
+## 3. 독립 스킬 (`02-skills/`) — 110개
 
 ### UI·디자인 (37)
 adapt · animate · arrange · audit · bolder · clarify · colorize · critique · delight · distill · extract · harden · normalize · onboard · optimize · overdrive · polish · quieter · typeset · frontend-design · taste-brutalist · taste-minimalist · taste-output · taste-redesign · taste-skill · taste-soft · taste-stitch · design-masters-reference · ui-ux-pro-max · ui-ux-translator · ui-inspector · gemini-design-expert · aidu-design-system · aidu-web-cloner · web-design-guidelines · designer-skill-builder · teach-impeccable
