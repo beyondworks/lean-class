@@ -96,7 +96,7 @@ This workflow is triggered by Start Tutorial, goes through 11 transformation ste
   "meta": {
     "creator": "Lucas Peyrin",
     "instanceId": "e409ea34548a2afe2dffba31130cd1cf2e98ebe2afaeed2a63caf2a0582d1da0",
-    "fingerprint": "eyJ_REDACTED_EXAMPLE_TOKEN.eyJ_REDACTED_EXAMPLE_TOKEN.22NSzq8u2n90V1pTm2nufo-wYBcjQDKoAJuTz0ouwU8"
+    "fingerprint": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdG9yIjoiIiwiaXNzIjoibjhuIiwiaWF0IjoxNzUzMTEwNzQyfQ.22NSzq8u2n90V1pTm2nufo-wYBcjQDKoAJuTz0ouwU8"
   },
   "nodes": [
     {

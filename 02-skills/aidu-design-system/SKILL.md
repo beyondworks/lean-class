@@ -102,7 +102,7 @@ tokens.ts 수정 → 모든 컴포넌트 자동 반영
 ## 📋 Agent Tasks
 
 ### Agent 1: Token Extractor
-**참조:**
+**참조:** `references/token-extractor.md`
 
 **입력:** globals.css, 인라인 스타일, Tailwind 설정
 **출력:** `src/theme/tokens/`
@@ -129,7 +129,7 @@ export const tokens = {
 ```
 
 ### Agent 2: Component Converter
-**참조:**
+**참조:** `references/component-converter.md`
 
 **입력:** 원본 컴포넌트 (.tsx), 추출된 토큰
 **출력:** MUI 래핑 컴포넌트
@@ -144,7 +144,7 @@ Tailwind class → MUI 테마 값
 **CRITICAL:** 하드코딩 금지, 모든 값은 토큰 참조
 
 ### Agent 3: Layout Analyzer
-**참조:**
+**참조:** `references/layout-analyzer.md`
 
 **입력:** 페이지/섹션 컴포넌트
 **출력:** 그리드 시스템, 브레이크포인트, 컨테이너
@@ -161,7 +161,7 @@ export const Container = styled(MuiContainer)(({ theme }) => ({
 ```
 
 ### Agent 4: Storybook Generator
-**참조:**
+**참조:** `references/storybook-generator.md`
 
 **입력:** 변환된 컴포넌트
 **출력:** `.storybook/` 설정 + `*.stories.tsx`
@@ -173,7 +173,7 @@ export const Container = styled(MuiContainer)(({ theme }) => ({
 - 테마 스위칭 (light/dark)
 
 ### Agent 5: Package Builder
-**참조:**
+**참조:** `references/package-builder.md`
 
 **출력:** npm 배포 가능한 패키지 구조
 
@@ -299,6 +299,12 @@ pnpm publish --access public
 
 ## 📚 References
 
+- `references/token-extractor.md` - 토큰 추출 상세 규칙
+- `references/component-converter.md` - CSS→MUI 변환 규칙
+- `references/layout-analyzer.md` - 레이아웃 시스템 규칙
+- `references/storybook-generator.md` - Storybook 설정
+- `references/package-builder.md` - 패키지 빌드 설정
+- `references/pattern-detection.md` - 프로젝트 패턴 감지
 
 ---
 

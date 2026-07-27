@@ -53,7 +53,7 @@
 ```
 /pre-deploy-review [프로젝트 경로]
 /pre-deploy-review .
-/pre-deploy-review /Users/me/my-app
+/pre-deploy-review $HOME/my-app
 ```
 
 ## 산출물

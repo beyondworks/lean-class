@@ -650,15 +650,15 @@ function HeroSection({ title, ctaText, onCtaClick }) {
 
 | 문서 | 용도 | 우선순위 |
 |------|------|----------|
-| | MUI Grid import/size prop 규칙 | CRITICAL |
-| | MUI 테마 커스터마이징 | CRITICAL |
-| | Storybook 패턴 가이드 | MUST |
-| | 스크린샷 시각 분석 규칙 | MUST |
-| | 색상 추출 규칙 | MUST |
-| | 타이포그래피 분석 | MUST |
-| | Semantic 간격 시스템 | MUST |
-| | 그리드 시스템 설계 | SHOULD |
-| | MUI 컴포넌트 생성 | SHOULD |
+| `references/mui-grid-rules.md` | MUI Grid import/size prop 규칙 | CRITICAL |
+| `references/mui-theme-rules.md` | MUI 테마 커스터마이징 | CRITICAL |
+| `references/storybook-patterns.md` | Storybook 패턴 가이드 | MUST |
+| `references/visual-analyzer.md` | 스크린샷 시각 분석 규칙 | MUST |
+| `references/color-extractor.md` | 색상 추출 규칙 | MUST |
+| `references/typography-analyzer.md` | 타이포그래피 분석 | MUST |
+| `references/spacing-system.md` | Semantic 간격 시스템 | MUST |
+| `references/grid-system.md` | 그리드 시스템 설계 | SHOULD |
+| `references/component-builder.md` | MUI 컴포넌트 생성 | SHOULD |
 
 ---
 

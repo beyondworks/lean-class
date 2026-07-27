@@ -170,9 +170,9 @@ outputs/visuals/
 
 | 문서 | 용도 |
 |------|------|
-| | 효과적인 프롬프트 작성법 |
-| | 카테고리별 스타일 프리셋 |
-| | 플랫폼별 이미지 크기 |
+| `references/prompt-guide.md` | 효과적인 프롬프트 작성법 |
+| `references/style-presets.md` | 카테고리별 스타일 프리셋 |
+| `references/size-spec.md` | 플랫폼별 이미지 크기 |
 
 ## 템플릿
 

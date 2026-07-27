@@ -26,3 +26,6 @@ node_modules/
 
 # 단, MCP 키 placeholder 안내 파일은 포함
 !.env.example
+
+# 오너 정보 (설치 시 사용자가 만드는 답변 파일 — 커밋 금지)
+owner.conf

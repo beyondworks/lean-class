@@ -37,7 +37,7 @@ When using Claude Design/Open Design-style generators, do not jump straight from
 - Motion policy and density level
 - Explicit anti-patterns plus the replacement aesthetic
 
-Then require a visible **visual-system lock** before code: surface, palette, typography roles, spacing rhythm, motif language, and page rhythm. Run every iteration through: generate → browser/screenshot review → score design quality, originality, craft, functionality, and anti-slop → send a targeted refinement prompt. See for a concrete Claude Design/Open Design experiment pattern, for multi-run operations, screenshot preservation, completion/stop handling, and Telegram-friendly mobile captures, and for pushing 7–8/10 artifacts toward official-demo-level 9.7–10/10 quality.
+Then require a visible **visual-system lock** before code: surface, palette, typography roles, spacing rhythm, motif language, and page rhythm. Run every iteration through: generate → browser/screenshot review → score design quality, originality, craft, functionality, and anti-slop → send a targeted refinement prompt. See `references/open-design-control-loop.md` for a concrete Claude Design/Open Design experiment pattern, `references/open-design-run-operations.md` for multi-run operations, screenshot preservation, completion/stop handling, and Telegram-friendly mobile captures, and `references/open-design-quality-escalation.md` for pushing 7–8/10 artifacts toward official-demo-level 9.7–10/10 quality.
 
 ## Design Direction
 

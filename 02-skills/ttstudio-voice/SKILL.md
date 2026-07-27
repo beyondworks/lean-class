@@ -10,16 +10,16 @@ Voicebox 앱의 내부 API를 통해 텍스트를 음성으로 변환한다.
 
 ## Voice import / sample creation pitfall
 
-If the user asks whether “Import Voice” can take an MP3, check. API `/profiles/import` imports exported Voicebox profile ZIP archives. MP3/WAV samples normally require creating a profile via `/profiles`, then adding the sample via `/profiles/{profile_id}/samples` with accurate `reference_text`.
+If the user asks whether “Import Voice” can take an MP3, check `references/2026-05-27-voicebox-import-vs-sample.md`. API `/profiles/import` imports exported Voicebox profile ZIP archives. MP3/WAV samples normally require creating a profile via `/profiles`, then adding the sample via `/profiles/{profile_id}/samples` with accurate `reference_text`.
 
 ## 사전 조건
 - Voicebox 앱 또는 `voicebox-server` 백엔드가 실행 중이어야 한다
 - 포트는 동적 할당 가능 — ps에서 자동 탐지
-- 에이전트/Telegram 세션에서 앱을 `open`으로 띄우면 에이전트 프로필 HOME 아래의 빈 데이터 디렉터리를 볼 수 있다. 사용자 실제 Voicebox 프로필을 써야 하면 백엔드를 직접 실행하며 `--data-dir '~/Library/Application Support/sh.voicebox.app'`를 명시한다.
+- Hermes/Telegram 세션에서 앱을 `open`으로 띄우면 Hermes 프로필 HOME 아래의 빈 데이터 디렉터리를 볼 수 있다. {{OWNER_TITLE}} 실제 Voicebox 프로필을 써야 하면 백엔드를 직접 실행하며 `--data-dir '$HOME/Library/Application Support/sh.voicebox.app'`를 명시한다.
 
 ## 사용자 opt-out 우선
 
-사용자가 “TTStudio는 쓰지 말고”, “Voicebox 말고”, “무료 오픈소스 TTS로”처럼 명시적으로 이 경로를 제외하면 이 스킬의 생성 경로를 사용하지 않는다. 이 경우 TTStudio/Voicebox로 몰래 대체하지 말고, 요청한 TTS 계열을 먼저 시도한다. 이미 생성된 영상에 음성만 입히는 작업이면 `video-capture`의 패턴을 우선 적용한다.
+{{OWNER_TITLE}}이 “TTStudio는 쓰지 말고”, “Voicebox 말고”, “무료 오픈소스 TTS로”처럼 명시적으로 이 경로를 제외하면 이 스킬의 생성 경로를 사용하지 않는다. 이 경우 TTStudio/Voicebox로 몰래 대체하지 말고, 요청한 TTS 계열을 먼저 시도한다. 이미 생성된 영상에 음성만 입히는 작업이면 `video-capture`의 `references/existing-mp4-tts-voiceover.md` 패턴을 우선 적용한다.
 
 ## 포트 탐지 / 직접 실행
 
@@ -29,15 +29,15 @@ Voicebox는 실행 시마다 포트가 바뀔 수 있다. 아래 명령으로 �
 ps aux | grep voicebox-server | grep -oE '\-\-port [0-9]+' | awk '{print $2}'
 ```
 
-에이전트 환경에서 안정적으로 실제 사용자 프로필을 읽게 하려면 직접 실행한다:
+Hermes에서 안정적으로 실제 사용자 프로필을 읽게 하려면 직접 실행한다:
 
 ```bash
-~/Projects/Voicebox.app/Contents/MacOS/voicebox-server \
-  --data-dir '~/Library/Application Support/sh.voicebox.app' \
+$HOME/Projects/Voicebox.app/Contents/MacOS/voicebox-server \
+  --data-dir '$HOME/Library/Application Support/sh.voicebox.app' \
   --port 17494
 ```
 
-자세한 agent/Voicebox 워크플로우는 참고.
+자세한 Hermes/Voicebox 워크플로우는 `references/voicebox-hermes-workflow.md` 참고.
 
 ## API 엔드포인트 (Voicebox 내부 서버)
 
@@ -79,14 +79,14 @@ curl -L http://localhost:{PORT}/audio/{id} -o output.wav
 
 # 4. 메타데이터 확인
 curl -s http://localhost:{PORT}/history/{id}
-# → "audio_path": "/Users/.../generations/{id}.wav"
+# → "audio_path": "$HOME/generations/{id}.wav"
 ```
 
 ### 프로파일 현황
 | ID | 이름 | 용도 |
 |---|---|---|
-| <YOUR_VOICE_ID> | Example Voice | 사용자/사용자 메인 보이스 |
-| <YOUR_VOICE_ID_2> | 보조 보이스 | 대체 보이스 |
+| 6d6070e5-d965-43eb-8b8f-401ab9d5504e | Leankim | {{OWNER_TITLE}}/{{OWNER_NAME}} 메인 보이스 |
+| f3c07de1-... | 효율v2 | 대체 보이스 |
 
 ## 자동화 스크립트
 
@@ -101,7 +101,7 @@ config.json:
 {
   "chunks_file": "script/tts-chunks.md",
   "output_dir": "voice",
-  "profile_id": "<YOUR_VOICE_ID>",
+  "profile_id": "6d6070e5-d965-43eb-8b8f-401ab9d5504e",
   "language": "ko",
   "padding_ms": 300,
   "gap_within_scene_ms": 400,
@@ -113,7 +113,8 @@ config.json:
 
 ### Voicebox-only / 다중 보이스 인터뷰 파일
 
-사용자가 “Voicebox 사용”, “질문은 다른 목소리, 답변은 내 목소리”, “말이 겹치지 않게”, “끝음절이 짤리지 않게”, “10분 이후 무음 해결”을 요구하면
+사용자가 “Voicebox 사용”, “질문은 다른 목소리, 답변은 내 목소리”, “말이 겹치지 않게”, “끝음절이 짤리지 않게”, “10분 이후 무음 해결”을 요구하면 `references/voicebox-dual-voice-interview-qa.md`
+- `references/google-docs-korean-dual-voice-interview.md`의 패턴을 우선 적용한다.
 
 긴급 면접/리허설 오디오에서 사용자가 Voicebox를 명시하지 않고 “빨리”, “시간 없다”, “한국어 자연스러운 여성/남성 음성”을 요구하면 macOS `say`의 한국어 보이스를 빠른 납품 경로로 사용할 수 있다. 예: 면접관 여성 `Yuna`, 답변자 남성 `Eddy` 또는 사용 가능한 ko_KR 남성 보이스. 단, 사용자가 Voicebox 또는 본인 목소리를 지정한 경우에는 이 fallback을 쓰지 않는다.
 
@@ -135,23 +136,23 @@ config.json:
 9. **블록 간 무음 갭** — 같은 씬 0.4초, 씬 경계 0.8초. 빠르게 들리면 0.55초 기본으로 재조립한다.
 10. **Whisper로 싱크 검증** — 최종 wav/mp4를 Whisper로 전사해 segment timing을 자막/씬 타이밍에 반영한다. 표시 자막은 Whisper 오인식만 교정한다. trailing silence/reverb에서 Whisper가 가짜 마지막 문장을 hallucinate할 수 있으므로 마지막 유효 발화 이후는 trim하거나 suspicious final segment를 제외한다.
 11. **silencedetect로 연결 확인** — `ffmpeg -af silencedetect=noise=-45dB:d=0.25~0.35`로 긴 무음/비정상 끊김을 확인한다. 문장별 갭이 0.45~0.65초로 반복되는 것은 정상 호흡으로 본다.
-12. **반복/오인식 문장은 대본을 바꿔 재생성** — 같은 문장이 반복되거나 고유명사(사용자 등)가 깨지면 seed만 바꾸지 말고 문장을 더 단순하게 고쳐 재생성한다.
+12. **반복/오인식 문장은 대본을 바꿔 재생성** — 같은 문장이 반복되거나 고유명사({{OWNER_TITLE}} 등)가 깨지면 seed만 바꾸지 말고 문장을 더 단순하게 고쳐 재생성한다.
 13. **결과 듣고 끊기면 재생성** — 자동 검수는 한계, 수동 확인이 최선
 14. **한국어 `다` 종성 급끊김 대응** — 사용자가 “`다`가 `ㄷ`로 끊긴다”거나 말끝이 부자연스럽다고 지적하면, 단순 tail padding만으로 해결하려 하지 말고 대본 자체를 더 구어체로 바꾼다. 영상 내레이션에서는 `합니다/됩니다/맞습니다`를 `해요/돼요/맞아요`, `입니다`를 `이에요/예요`, 마지막 문장은 `거예요/가까워요`처럼 열린 말끝으로 재작성한 뒤 문장별 재생성한다. 필요하면 Voicebox instruct에 “문장 끝의 요/예요/거예요를 급하게 끊지 말고 숨을 살짝 남긴다”를 명시한다.
 
-문장별 Voicebox 재생성/concat/QA 예시는 참고.
+문장별 Voicebox 재생성/concat/QA 예시는 `references/voicebox-sentence-chunk-qa.md` 참고.
 
-이미지→영상 릴스 패키지에서 Voicebox 클론 보이스로 씬별 나레이션을 생성하고, Kling/Runway 등 영상 생성 프롬프트와 함께 납품해야 하는 경우는 참고. 핵심: 사용자가 Voicebox를 명시하면 TTStudio/`say`로 대체하지 말고, 모든 씬에 나레이션을 부여하며, sound-video sync OFF 씬은 외부 Voicebox MP3를 편집에서 붙인다. 한국어 발음 QA는 Whisper 전사로 확인하고 `노션→노쎤`, `AI`, 어려운 한자어 발음이 깨지면 해당 씬만 구어체로 단순화해 재생성한다.
+이미지→영상 릴스 패키지에서 Voicebox 클론 보이스로 씬별 나레이션을 생성하고, Kling/Runway 등 영상 생성 프롬프트와 함께 납품해야 하는 경우는 `references/voicebox-cloned-reel-narration.md` 참고. 핵심: 사용자가 Voicebox를 명시하면 TTStudio/`say`로 대체하지 말고, 모든 씬에 나레이션을 부여하며, sound-video sync OFF 씬은 외부 Voicebox MP3를 편집에서 붙인다. 한국어 발음 QA는 Whisper 전사로 확인하고 `노션→노쎤`, `AI`, 어려운 한자어 발음이 깨지면 해당 씬만 구어체로 단순화해 재생성한다.
 
-면접/리허설 질문처럼 여러 질문을 **하나의 MP3**로 전달해야 하는 경우는 참고. 질문별 개별 파일을 전달하지 말고, 질문 단위 WAV 청크를 생성한 뒤 명시적 무음 갭으로 concat한다. 긴 배치가 도구 timeout으로 끊겨도 이미 생성된 청크는 살리고, idempotent 스크립트를 재실행해 누락 청크와 최종 MP3 export만 이어서 처리한다.
+면접/리허설 질문처럼 여러 질문을 **하나의 MP3**로 전달해야 하는 경우는 `references/voicebox-interview-question-pack.md` 참고. 질문별 개별 파일을 전달하지 말고, 질문 단위 WAV 청크를 생성한 뒤 명시적 무음 갭으로 concat한다. 긴 배치가 도구 timeout으로 끊겨도 이미 생성된 청크는 살리고, idempotent 스크립트를 재실행해 누락 청크와 최종 MP3 export만 이어서 처리한다.
 
-Google Docs 링크에서 자기소개+Q/A만 빠르게 추출해 여성 면접관/남성 답변자 단일 MP3를 만들어야 하는 긴급 작업은를 참고한다. 공개 Docs는 `/export?format=txt`로 직접 추출하고, `1번/2번/3번` 같은 번호는 `일번/이번/삼번`으로 대본에서 선변환한다.
+Google Docs 링크에서 자기소개+Q/A만 빠르게 추출해 여성 면접관/남성 답변자 단일 MP3를 만들어야 하는 긴급 작업은 `references/urgent-dual-voice-google-docs.md`를 참고한다. 공개 Docs는 `/export?format=txt`로 직접 추출하고, `1번/2번/3번` 같은 번호는 `일번/이번/삼번`으로 대본에서 선변환한다.
 
-Google Docs 링크에서 자기소개+Q/A를 빠르게 추출해 여성 면접관/남성 답변자 단일 MP3로 만드는 긴급 워크플로우는 참고.
+Google Docs 링크에서 자기소개+Q/A를 빠르게 추출해 여성 면접관/남성 답변자 단일 MP3로 만드는 긴급 워크플로우는 `references/rapid-google-doc-interview-audio.md` 참고.
 
 ## 듀얼 보이스 인터뷰 시뮬레이션
 
-사용자가 면접 연습/인터뷰 시뮬레이션을 요청하면서 "질문은 다른 목소리, 답변은 내 목소리" 또는 "하나의 파일"을 요구하면 패턴을 따른다. 질문과 답변을 같은 번호 블록으로 맞춘 뒤, 질문은 비사용자 한국어 프로필(예: 애덕이), 답변은 Example Voice/사용자 프로필로 생성하고 `질문 → 짧은 무음 → 답변 → 긴 무음` 순서로 하나의 MP3로 concat한다. 질문만/답변만 별도 생성하지 말고, 사용자가 명시한 최종 청취 형태(단일 Q/A 파일)를 우선한다.
+사용자가 면접 연습/인터뷰 시뮬레이션을 요청하면서 "질문은 다른 목소리, 답변은 내 목소리" 또는 "하나의 파일"을 요구하면 `references/voicebox-dual-voice-interview.md` 패턴을 따른다. 질문과 답변을 같은 번호 블록으로 맞춘 뒤, 질문은 비사용자 한국어 프로필(예: 애덕이), 답변은 Leankim/{{OWNER_NAME}} 프로필로 생성하고 `질문 → 짧은 무음 → 답변 → 긴 무음` 순서로 하나의 MP3로 concat한다. 질문만/답변만 별도 생성하지 말고, 사용자가 명시한 최종 청취 형태(단일 Q/A 파일)를 우선한다.
 
 ## Voicebox 정리
 

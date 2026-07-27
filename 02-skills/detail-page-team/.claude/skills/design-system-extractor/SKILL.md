@@ -72,7 +72,7 @@ playwright screenshot {url} \
 ```
 
 ### Step 3: 컬러 추출
-**참조:**
+**참조:** `references/color-extractor.md`
 
 1. CSS에서 색상 값 수집 (hex, rgb, hsl)
 2. 사용 빈도 분석
@@ -85,7 +85,7 @@ playwright screenshot {url} \
    - Background: 배경 색상들
 
 ### Step 4: 타이포그래피 분석
-**참조:**
+**참조:** `references/typography-analyzer.md`
 
 1. font-family 추출
 2. font-size 사용 패턴 분석
@@ -94,7 +94,7 @@ playwright screenshot {url} \
 5. 스케일 정규화 (8px 기반)
 
 ### Step 5: 그리드 분석
-**참조:**
+**참조:** `references/grid-analyzer.md`
 
 1. 컨테이너 max-width 측정
 2. 컬럼 수 추정 (12컬럼 기본)
@@ -102,14 +102,14 @@ playwright screenshot {url} \
 4. 반응형 브레이크포인트
 
 ### Step 6: 간격 분석
-**참조:**
+**참조:** `references/spacing-analyzer.md`
 
 1. padding/margin 값 수집
 2. 패턴 분석 (4px/8px 배수)
 3. 간격 스케일 생성
 
 ### Step 7: 컴포넌트 패턴 분석
-**참조:**
+**참조:** `references/component-patterns.md`
 
 1. 섹션 구조 패턴
 2. 카드 컴포넌트 스타일
@@ -353,11 +353,11 @@ outputs/design-tokens/
 
 | 문서 | 용도 |
 |------|------|
-| | 컬러 추출 규칙 |
-| | 타이포 분석 규칙 |
-| | 그리드 분석 규칙 |
-| | 간격 분석 규칙 |
-| | 컴포넌트 패턴 |
+| `references/color-extractor.md` | 컬러 추출 규칙 |
+| `references/typography-analyzer.md` | 타이포 분석 규칙 |
+| `references/grid-analyzer.md` | 그리드 분석 규칙 |
+| `references/spacing-analyzer.md` | 간격 분석 규칙 |
+| `references/component-patterns.md` | 컴포넌트 패턴 |
 
 ## 스크립트
 

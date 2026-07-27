@@ -1,22 +1,34 @@
 ---
 name: handoff
-description: Document session work and prepare handover for next session or a a named agent persona
+description: Document session work and prepare handover for next session or a named Hermes persona
 ---
 
 # Session Handoff
 
 세션 종료 전 작업 내용을 정리하고 다음 세션을 위한 핸드오버 문서를 준비한다.
 
+## 도메인 연결 (채널 무관 — 작업은 채널이 아니라 도메인의 것)
+
+이 vault는 Hermes·Claude Code·Codex가 공유한다(하나의 로컬·하나의 작업자). handoff가 디자인/콘텐츠/개발/리서치 작업이면 **만든 채널과 무관하게 그 도메인에 연결**한다:
+- handoff 노트 `tags`에 `domain/<design|content|dev|research>` + `author` + 채널 출처(`@[claude|codex|hermes]`)를 단다.
+- 재사용 가능한 구현 결정·규칙·학습은 conversations-only로 끝내지 말고 해당 도메인 정제수(`wiki/knowledge/<domain>/`)·`wiki/decisions`·해당 MOC로 distill한다.
+- 즉 Claude Code/Codex로 한 디자인·콘텐츠 작업도 효리/효나 cron 데이터와 **같은 도메인 정제수·하네스로 수렴**한다. 규칙 정본: [[domain-knowledge-pipeline]].
+
 ## Persona-targeted handoff
 
-The representative requests a persona-targeted handoff to a specific a named agent persona (e.g. a recurring team persona), in addition to the standard session handoff. Detailed patterns are in.
+{{OWNER_TITLE}}이 효삼/효일/효리/효정처럼 특정 Hermes persona에게 인수인계를 요청하면 일반 세션 handoff에 더해 persona-targeted handoff를 만든다. 자세한 패턴은 `references/persona-targeted-handoff.md`.
 
 ## Recurring cron work-status handoff
 
-주기성 a named agent persona cron이 “handoff-level work-status note”를 요구하면, 진행이 없어도 새 상태 노트와 `log.md` append가 산출물이다. 세부 패턴과 최종 응답 형식은를 따른다.
+주기성 Hermes persona cron이 “handoff-level work-status note”를 요구하면, 진행이 없어도 새 상태 노트와 `log.md` append가 산출물이다. 세부 패턴과 최종 응답 형식은 `references/cron-work-status-vault-pattern.md`를 따른다.
 
 - 반복 status note 본문은 `templates/cron-work-status-note.md`를 복사해 persona/role/responsibility/lint 상태만 채우면 된다. 특히 “진행 없음” 주기에도 현재 포커스, 마지막 액션, 결정/가정, 블로커, 다음 3시간 계획, 파일/아티팩트, 다른 에이전트가 알아야 할 것을 모두 남긴다.
-- A recurring team persona's regular work-status cron should follow the persona-specific wording and readiness plan in the corresponding `references/` file for that persona. When existing vault lint is in FAIL state and no new instructions are given, proceed safely by writing only the new handoff note, and treat post-lint repeated failures as expected verification.
+- 효정 / Education Lab 정기 work-status cron은 `references/education-lab-cron-status.md`의 persona-specific wording과 readiness plan을 참고한다. 기존 vault lint FAIL 상태에서 신규 지시 없이 안전하게 handoff만 남기고, post-lint 반복 실패 warning을 expected verification으로 처리한 구체 예시는 `references/education-lab-cron-status-2026-05-26-1849.md`와 `references/education-lab-cron-status-2026-05-27-0357.md`를 참고한다.
+- 효나 / Creator Lab 정기 work-status cron은 `references/creator-lab-cron-status.md`의 persona-specific wording과 콘텐츠 제작 readiness plan을 참고한다. 기존 vault lint FAIL 상태에서 신규 브리프 없이 안전하게 handoff만 남긴 구체 예시는 `references/creator-lab-cron-status-2026-05-26-1821.md`와 `references/creator-lab-cron-status-2026-05-27-1848.md`를 참고한다. 특히 2026-05-27 18:48 예시는 이전 로그의 과장된 lint 요약을 복사하지 않고 현재 `vault-lint.sh` stdout에 실제로 나온 class만 적는 패턴을 보여준다.
+- 효리 / Design Lab 정기 work-status cron은 `references/design-lab-cron-status.md`의 persona-specific wording과 UI/UX·디자인 시스템·이미지/영상 readiness plan을 참고한다.
+- 효리 / Design Lab에서 기존 vault lint FAIL 상태로도 안전하게 신규 handoff만 작성한 구체 예시는 `references/design-lab-cron-status-2026-05-25-1432.md`를 참고한다.
+- 효리 / Design Lab에서 현재 `vault-lint.sh`가 PASS이지만 warning queue(raw 0/sources, `_unsorted`, conversations→wiki coverage)를 출력하는 경우의 정확한 PASS wording과 placeholder finalization 예시는 `references/design-lab-cron-status-2026-05-30-0458.md`를 참고한다.
+- Post-lint 뒤 note에 남은 미래형 문구를 현재 상태로 정리하는 검증/패치 패턴은 `references/periodic-handoff-note-finalization-2026-05-25.md`를 참고한다.
 - Pre/post lint가 같은 기존 failure/warning class로 실패하고, post-lint 이후 패치는 `append 완료`/`post-lint FAIL` 같은 wording-only 확정뿐이면 세 번째 lint를 돌리지 않는다. note read-back + `log.md` exact 검색으로 검증을 끝내고, note/final에는 “새 handoff가 새 failure class를 만들지 않았다”처럼 범위를 분리해 적는다.
 
 **우선순위 주의**: cron prompt가 `YYYY-MM-DD-HHMM-{persona}-work-status.md`처럼 명시 파일명을 요구하면 아래 일반 persona-targeted handoff 파일명보다 cron prompt/reference 패턴을 우선한다. mandatory status-note cron에서는 `[SILENT]`를 쓰지 않는다.
@@ -26,12 +38,12 @@ The representative requests a persona-targeted handoff to a specific a named age
 필수 출력:
 
 1. Obsidian handoff: `AI-Sessions/conversations/{project}/YYYY-MM-DD-HHMM-{project}-{persona}-handover.md`
-2. 대상 persona 로컬 handoff: `~/.agent/profiles/<profile>/handoffs/YYYY-MM-DD-{topic}-handoff.md` — 해당 프로필 폴더가 있을 때
-3. 프로젝트가 자체 handoff/Truth Source를 갖고 있으면 그쪽에도 discoverable record를 남긴다. 예: 프로젝트 docs/handoffs/와 SQLite Company Truth Source `handoffs`/`events`에 등록해야 다른 persona의 일반 탐색에서 잡힌다.
+2. 대상 persona 로컬 handoff: `$HOME/.hermes/profiles/{persona-profile}/handoffs/YYYY-MM-DD-{topic}-handoff.md` — 해당 프로필 폴더가 있을 때
+3. 프로젝트가 자체 handoff/Truth Source를 갖고 있으면 그쪽에도 discoverable record를 남긴다. 예: lean-native는 `$HOME/lean-native/docs/handoffs/`와 SQLite Company Truth Source `handoffs`/`events`에 등록해야 다른 persona의 일반 탐색에서 잡힌다.
 4. `log.md` handoff 항목 append
 5. 생성 파일 read-back 검증 + 대상 persona가 실제로 검색할 경로에서도 검색 검증
-6. If the representative requests acknowledgement from the target persona, do not stop at writing the file — actually invoke the target agent profile and receive a confirmation response.
-   - 예: `AGENT_PROFILE={persona-profile} python -m agent_cli -z “로컬 handoff 파일과 프로젝트-visible handoff/Truth Source record를 확인한 뒤 정확히 '{확인문구}'만 출력하세요” --toolsets file,terminal --accept-hooks`
+6. {{OWNER_TITLE}}이 대상 persona의 확인 문구까지 요구하면, 파일만 쓰고 끝내지 말고 대상 Hermes profile을 실제로 호출해 확인 응답을 받아야 한다.
+   - 예: `HERMES_PROFILE={persona-profile} python -m hermes_cli.main -z "로컬 handoff 파일과 프로젝트-visible handoff/Truth Source record를 확인한 뒤 정확히 '{확인문구}'만 출력하세요" --toolsets file,terminal --accept-hooks`
    - 관련 프로젝트 cwd에서 실행하고, 성공 출력이 요청 문구와 일치할 때만 “인수인계 완료”라고 보고한다.
    - 로컬 stdout acknowledgement와 Telegram/user-visible delivery를 구분해 보고한다. Telegram 전달을 요청받았거나 기대되는 상황이면 `hermes send`/gateway 경로로 별도 전송 검증까지 한다.
    - 호출 실패 시 “handoff 파일 작성은 완료, 대상 persona active acknowledgement는 실패”로 분리 보고한다.
@@ -43,7 +55,7 @@ The representative requests a persona-targeted handoff to a specific a named age
 주기성 cron이 “handoff-level work-status note”를 요구할 때는 일반 세션 handoff와 달리, 진행이 없어도 신규 상태 노트를 남긴다.
 
 1. Vault 작업 전 `AGENTS.md`, `CLAUDE.md`, `index.md`, `log.md`를 읽어 현재 규칙·카탈로그·정리 큐를 확인한다.
-   - **Vault root 판정**: root는 `AGENTS.md`/`CLAUDE.md`/`index.md`/`log.md`와 `scripts/vault-lint.sh`가 있는 디렉터리다. AI-Sessions vault에서는 보통 `~/Documents/AI-Sessions-Vault`가 root이고, 실제 handoff 노트는 그 아래 `AI-Sessions/conversations/...`에 쓴다.
+   - **Vault root 판정**: root는 `AGENTS.md`/`CLAUDE.md`/`index.md`/`log.md`와 `scripts/vault-lint.sh`가 있는 디렉터리다. {{OWNER_TITLE}}의 AI-Sessions vault에서는 보통 `{{VAULT_ROOT}}`가 root이고, 실제 handoff 노트는 그 아래 `AI-Sessions/conversations/...`에 쓴다.
    - `AI-Sessions/` 하위에도 `log.md` 등이 있을 수 있지만, schema 파일이 비어 있거나 lint script가 없으면 잘못된 root로 본다. 이때 상위 vault root로 올라가 다시 읽고 lint를 실행한다.
 2. 가능하면 vault root에서 `bash scripts/vault-lint.sh`를 사전 실행한다.
    - 기존 lint FAIL이 destructive cleanup 대상이면 raw/와 기존 conversations 파일은 건드리지 말고, 새 handoff 파일 생성만 계속한다.
@@ -118,7 +130,7 @@ The representative requests a persona-targeted handoff to a specific a named age
      ```
 
 7. **Obsidian vault 동기화** (필수, 모든 프로젝트 공통)
-   - 베이스 경로: `~/Documents/AI-Sessions-Vault/AI-Sessions/conversations/`
+   - 베이스 경로: `{{VAULT_ROOT}}/AI-Sessions/conversations/`
    - 프로젝트 폴더명 결정:
      - 우선순위: 프로젝트 CLAUDE.md에서 명시된 vault 폴더명 → `basename "$PWD"` 결과
      - 폴더가 없으면 `mkdir -p`로 생성

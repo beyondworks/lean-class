@@ -1,12 +1,25 @@
 ---
 name: obsidian-reference
-description: Use when the user asks to reference, search, or learn newly reflected rules from the AI-Sessions-Vault / Obsidian vault, including prior handoffs, project wiki pages, lint status, and review queues.
+description: Use when the user asks to reference, search, or learn newly reflected rules from the {{VAULT_ROOT}} / Obsidian vault, including prior handoffs, project wiki pages, lint status, and review queues.
 triggers: ["옵시디언 참조", "옵시디언 참고", "옵시디언 봐", "옵시디언에서 찾아", "옵시디언에서 검색", "옵시디언 노트 가져와", "옵시디언 볼트에 반영된 규칙 숙지", "새 규칙 숙지", "vault 규칙 숙지", "obsidian reference", "obsidian ref", "obsidian search", "vault 참조", "vault 참고", "vault 검색", "wiki 참조", "wiki 검색", "이전 작업 참조", "이전 세션 참조", "이전 핸드오버", "지난번 어디까지"]
 ---
 
 # obsidian-reference
 
 자연어 한 마디로 vault에서 현재 프로젝트 관련 노트를 끌어오는 스킬. obsidian-save와 짝을 이룸. **읽기 전용이지만 vault 의 [`AGENTS.md`](AGENTS.md) 사전점검 룰은 동일하게 적용** — 사용자에게 stale·broken·정리 큐 정보를 함께 노출해야 카파시 wiki 가 살아 움직인다.
+
+## 위임 우선 — obsidian-curator 서브에이전트 (맥락 보존)
+
+이 스킬이 발동하면 **메인 세션 본업 맥락 오염 방지를 위해 작업을 `obsidian-curator` 서브에이전트에 위임**한다.
+- Claude Code: `Agent` 도구로 `subagent_type: obsidian-curator` 스폰 → 참조 대상(프로젝트/도메인) 전달 → 도메인 단위면 `<domain>-moc`+정제수+하네스 로드, freshness 점검 후 **요약 + (낡았으면) 업그레이드 알림만** 수신.
+- 서브에이전트 사용 불가 환경에서만 아래 절차를 메인에서 인라인 수행(fallback).
+
+## git 동기화 (참조 전 — 최신 수신, 필수)
+
+참조를 **읽기 전에** 다른 머신의 변경을 먼저 받는다 (다머신 맥락 공유):
+`bash scripts/vault-sync.sh pull`
+- rebase + autostash. origin 없으면 자동 생략(로컬 전용). 그 뒤 계단식 참조(contested 게이트 → 도메인 MOC → 핵심 1~3개) 진행.
+- 위임 시 `obsidian-curator`가 이 pull을 먼저 수행한다. 로직 정본은 vault `scripts/vault-sync.sh`.
 
 ## 발동 조건
 
@@ -30,7 +43,7 @@ triggers: ["옵시디언 참조", "옵시디언 참고", "옵시디언 봐", "�
 ## 대상 vault
 
 ```
-~/Documents/AI-Sessions-Vault/
+{{VAULT_ROOT}}/
 ├── CLAUDE.md         (운영 규약 — 정규화 매핑 표 + save/ingest 구분표)
 ├── AGENTS.md         (강제 self-check 체크리스트)
 ├── index.md          (콘텐츠 카탈로그 + 정리 큐)
@@ -60,16 +73,16 @@ When referencing or updating Vault context for a project with a designated owner
    - general heuristics or assistant interpretation
 2. If a later handoff contradicts an earlier owner handoff, mark the later item as `contested` or `needs review` instead of promoting it as final truth.
 3. Never apply lean-native / Claude Desktop internal UI rules to an independent benchmark or external-reference product unless the user or design owner explicitly requested that style.
-4. For cross-agent context packs, write provenance labels directly into the note so downstream agents can distinguish "팀 페르소나 판단" / "사용자 지시" / "reference observation" / "팀 페르소나 implementation note" / "assumption".
+4. For cross-agent context packs, write provenance labels directly into the note so downstream agents can distinguish "효리 판단" / "{{OWNER_TITLE}} 지시" / "reference observation" / "효일 implementation note" / "assumption".
 5. If contamination is discovered, fix in this order: shared context pack → project wiki → offending handoff warning → index/log → Company Truth Source DB correction event if runtime state was affected.
 
-Session-specific detail:.
+Session-specific detail: `references/independent-product-context-contamination.md`.
 
 ### 1. 현재 프로젝트 식별
 
 **우선순위 (위에서 아래로)**:
 
-1. 사용자 발화에 프로젝트명 명시 (예: "옵시디언 참조 myproject", "myproject 옵시디언 참조")
+1. 사용자 발화에 프로젝트명 명시 (예: "옵시디언 참조 linkbrain", "linkbrain 옵시디언 참조")
    → 그대로 사용
 2. 현재 프로젝트 `CLAUDE.md`에 `vault_folder: <name>` 메타가 있으면
    → 그 값 사용
@@ -80,7 +93,7 @@ Session-specific detail:.
    → 또는 사용자에게 "어떤 프로젝트?" 한 번 확인
 
 **정규화 매핑 (vault CLAUDE.md와 동일)**:
-- `MyProject`, `MyProject-UI`, `My-Project` → `myproject`
+- `Linkbrain`, `Linkbrain-UI`, `Link-brain` → `linkbrain`
 - `TTStudio_v2` → `ttstudio-v2`
 - `Cardnews/Creator/Deckster/Image-gen/Mole/Openclaw/RelayAX/Skills` → 모두 lowercase
 - 그 외 PascalCase/공백/언더스코어 → kebab-case lowercase로 변환
@@ -95,12 +108,14 @@ Session-specific detail:.
 
 ### 3. 참조 범위 수집
 
+요청이 프로젝트 단위가 아니라 **도메인 단위**(디자인/개발/콘텐츠)면, 먼저 도메인 MOC를 진입점으로 읽는다 — `AI-Sessions/wiki/synthesis/<domain>-moc.md` (예: `design-moc.md`)가 레퍼런스→해체→이해→규칙→모듈화→스킬 6단계로 정리돼 있다. 도메인 전체 탐색은 `#domain/<slug>` 태그로. 규칙 정본은 `wiki/playbooks/domain-knowledge-pipeline.md`.
+
 프로젝트명 식별 후 다음 자료를 수집한다 (병렬):
 
 **Claude Code 환경** (`Bash`, `Glob`, `Grep`, `Read` 사용):
 ```bash
-VAULT="~/Documents/AI-Sessions-Vault/AI-Sessions"
-PROJECT="myproject"  # 식별된 프로젝트명
+VAULT="{{VAULT_ROOT}}/AI-Sessions"
+PROJECT="linkbrain"  # 식별된 프로젝트명
 
 # 1순위: 핸드오버 폴더
 ls -t "$VAULT/conversations/$PROJECT/"*.md 2>/dev/null
@@ -145,7 +160,7 @@ grep -lri "$PROJECT" "$VAULT/wiki/sources/legacy/" 2>/dev/null
 
 ```
 프로젝트: {정규화된 폴더명}
-경로: ~/Documents/AI-Sessions-Vault/AI-Sessions/conversations/{프로젝트}/
+경로: {{VAULT_ROOT}}/AI-Sessions/conversations/{프로젝트}/
 vault 상태: lint pass / fail (N건) — {fail 한 줄 요약, 있으면}
 
 핸드오버 ({N}개, 최근순):
@@ -179,7 +194,7 @@ vault 상태: lint pass / fail (N건) — {fail 한 줄 요약, 있으면}
 {vault 내용을 합성한 답변}
 
 근거:
-- [[2026-05-03-1430-myproject-handover]] — 인용/참조 위치
+- [[2026-05-03-1430-linkbrain-handover]] — 인용/참조 위치
 - [[wiki/decisions/some-decision]] — ...
 - [[wiki/playbooks/some-playbook]] — ...
 
@@ -203,7 +218,7 @@ vault 상태: lint pass / fail (N건) — {fail 한 줄 요약, 있으면}
 
 Cowork는 cwd 개념이 다르므로 다음 중 하나로 작동:
 
-1. **사용자 명시 우선**: "옵시디언 참조 myproject", "myproject 옵시디언 참조"
+1. **사용자 명시 우선**: "옵시디언 참조 linkbrain", "linkbrain 옵시디언 참조"
 2. **Cowork 컨텍스트 파일 인식**: 작업 폴더에 `.cowork-project` 또는 프로젝트 식별 메타가 있으면 read
 3. **mcp-obsidian 폴더 listing**: `conversations/` 하위 폴더 목록을 보여주고 사용자가 선택
 4. **vault 전체 검색**: 프로젝트가 모호하면 사용자 발화 키워드로 vault 전체 검색
@@ -218,7 +233,7 @@ mcp-obsidian 도구 매핑:
 | 정교한 검색 (frontmatter/tags) | `mcp__mcp-obsidian__obsidian_complex_search` |
 | 최근 변경 노트 | `mcp__mcp-obsidian__obsidian_get_recent_changes` |
 
-mcp-obsidian의 경로는 vault 루트(`AI-Sessions-Vault/`) 기준 상대 경로 — 즉 `AI-Sessions/conversations/myproject/`처럼 입력.
+mcp-obsidian의 경로는 vault 루트(`{{VAULT_ROOT}}/`) 기준 상대 경로 — 즉 `AI-Sessions/conversations/linkbrain/`처럼 입력.
 
 ## 엣지 케이스
 
@@ -234,21 +249,21 @@ mcp-obsidian의 경로는 vault 루트(`AI-Sessions-Vault/`) 기준 상대 경�
 
 ## 예시 시나리오
 
-**시나리오 1 — Listing**: 사용자가 `~/Desktop/Appbuild/MyProject/`에서 새 세션 시작 후 "옵시디언 참조"
-1. `basename` → `MyProject` → 정규화 → `myproject`
-2. `conversations/myproject/` 45개 파일 발견
+**시나리오 1 — Listing**: 사용자가 `~/Desktop/Appbuild/Linkbrain/`에서 새 세션 시작 후 "옵시디언 참조"
+1. `basename` → `Linkbrain` → 정규화 → `linkbrain`
+2. `conversations/linkbrain/` 45개 파일 발견
 3. 최근 3개 핸드오버 frontmatter read → 요약
-4. `wiki/projects/myproject.md` 없음 → "생성 권장"
+4. `wiki/projects/linkbrain.md` 없음 → "생성 권장"
 5. Listing 출력 + 다음 작업 대기
 
 **시나리오 2 — Query**: 사용자가 "옵시디언 참조: 지난번 인증 어떻게 끝냈어?"
-1. 프로젝트 식별 (myproject)
-2. `conversations/myproject/` 파일명 + 본문에서 "auth|인증|login" grep
+1. 프로젝트 식별 (linkbrain)
+2. `conversations/linkbrain/` 파일명 + 본문에서 "auth|인증|login" grep
 3. 매칭된 핸드오버 2개 read
 4. 합성 답변 + citations 제공
 
 **시나리오 3 — Context inject**: 사용자가 "옵시디언 참조 후 SEO 메타 태그 추가해줘"
-1. 프로젝트 식별 (myproject)
+1. 프로젝트 식별 (linkbrain)
 2. 관련 핸드오버 1~2개 + `wiki/decisions/` 중 SEO 관련 페이지 read
 3. "참조 완료. SEO 관련 결정사항: ..." 보고
 4. 이어서 SEO 메타 태그 추가 작업 진행

@@ -30,11 +30,13 @@ description: >
 - 스토리텔링 비중 40%+ 필수
 - Social Proof → Authority + Liking으로 대체
 - 허위 리뷰 수/판매량 절대 금지
+- 상세: `references/new-product-strategy.md` 참조
 
 **카테고리별 전략**:
 - 카테고리별 심리 트리거 우선순위
 - 가격대별 메시지 톤
 - 필수 포함 요소
+- 상세: `references/category-patterns.md` 참조
 
 **플랫폼별 톤**:
 - 쿠팡: 정보 70% > 스토리 30%, FOMO 강조
@@ -74,6 +76,8 @@ description: >
 
 ### Step 4: 카피 작성
 심리 트리거와 카테고리에 맞는 카피 작성:
+- 상세: `references/psychology-triggers.md` 참조
+- 사례: `references/copywriting-examples.md` 참조
 
 ---
 
@@ -154,3 +158,7 @@ description: >
 ---
 
 ## 참조 파일
+- `references/category-patterns.md`: 카테고리별 상세 패턴
+- `references/psychology-triggers.md`: 심리 트리거 상세 가이드
+- `references/new-product-strategy.md`: 신규 상품 전략
+- `references/copywriting-examples.md`: 카피 사례집

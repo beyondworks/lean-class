@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AgentSpec v1",
+  "type": "object",
+  "required": ["version", "meta", "intent", "project", "executionPlan", "outputContract", "metric"],
+  "properties": {
+    "version": { "type": "string", "const": "1.0" },
+    "meta": {
+      "type": "object",
+      "required": ["sessionId", "projectRoot", "createdAt", "updatedAt", "riskLevel"],
+      "properties": {
+        "sessionId": { "type": "string" },
+        "projectRoot": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "riskLevel": { "type": "string", "enum": ["low", "medium", "high"] }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "required": ["rawUserRequest", "normalizedGoal", "taskType", "userVisibleOutput"],
+      "properties": {
+        "rawUserRequest": { "type": "string" },
+        "normalizedGoal": { "type": "string" },
+        "taskType": { "type": "string", "enum": ["feature", "bugfix", "refactor", "design", "test", "docs", "devops", "unknown"] },
+        "userVisibleOutput": { "type": "string" }
+      }
+    },
+    "project": {
+      "type": "object",
+      "required": ["techStack", "frameworks", "packageManager", "relevantFiles"],
+      "properties": {
+        "techStack": { "type": "array", "items": { "type": "string" } },
+        "frameworks": { "type": "array", "items": { "type": "string" } },
+        "packageManager": { "type": "string" },
+        "relevantFiles": { "type": "array", "items": { "type": "string" } },
+        "importantCommands": { "type": "object" }
+      }
+    },
+    "executionPlan": {
+      "type": "object",
+      "required": ["strategy", "steps"],
+      "properties": {
+        "strategy": { "type": "string" },
+        "steps": { "type": "array", "items": { "type": "string" }, "minItems": 2 }
+      }
+    },
+    "outputContract": {
+      "type": "object",
+      "required": ["deliverables", "acceptanceChecks", "reportStyle"],
+      "properties": {
+        "deliverables": { "type": "array", "items": { "type": "string" } },
+        "acceptanceChecks": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "reportStyle": { "type": "string", "enum": ["simple", "technical", "diff-focused"] }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "required": ["name", "definition", "measurementMethod", "acceptanceThreshold", "status"],
+      "properties": {
+        "name": { "type": "string" },
+        "definition": { "type": "string" },
+        "measurementMethod": { "type": "string" },
+        "sampleSize": { "type": "string" },
+        "acceptanceThreshold": { "type": "string" },
+        "status": { "type": "string", "enum": ["user-provided", "proposed"] }
+      }
+    }
+  }
+}

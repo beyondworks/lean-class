@@ -1,18 +1,38 @@
 # 패키징 목록 (Package Manifest)
 
-> 강사가 실제로 쓰는 **범용 툴 셋**(스킬·플러그인·MCP·커맨드·에이전트)을 패키징. 강사 개인 노하우(작업 사례·세션 기록)와 모든 시크릿·개인정보는 제외.
+> Claude Code 작업 환경 한 벌(스킬·플러그인·MCP·커맨드·에이전트 + **글로벌 규칙·하네스·셸**)을 패키징.
+> 개인 노하우(작업 사례·세션 기록)와 모든 시크릿·개인정보·페르소나는 제외.
 
 ## 0. 요약
 
-| 카테고리 | 포함 | 제외 | 폴더 |
-|---|---:|---:|---|
-| MCP 서버 | 18 | 3 | `00-mcp/` |
-| 플러그인 | 27 | 0 | `01-plugins/` |
-| 스킬 | 113 | 7 | `02-skills/` |
-| 슬래시 커맨드 | 29 | 2 | `03-commands/` |
-| 에이전트 | 22 | (보관 레거시 97) | `04-agents/` |
+| 카테고리 | 포함 | 폴더 |
+|---|---:|---|
+| MCP 서버 | 14 | `00-mcp/` |
+| 플러그인 | 27 | `01-plugins/` |
+| 스킬 | 123 | `02-skills/` |
+| 슬래시 커맨드 | 32 | `03-commands/` |
+| 에이전트 | 24 | `04-agents/` |
+| **글로벌 규칙** | **12 (+선택 1)** | **`06-rules/`** |
+| **하네스** | **1 (부트스트랩)** | **`07-fablize/`** |
+| **셸 설정** | **—** | **`08-shell/`** |
 
-**보안·개인정보 상태**: 실 시크릿 0 · `.env` 실파일 0 · 개인 식별자 0 · 개인 절대경로 0 · 깨진 링크 0 · **노하우 references 0**
+**보안·개인정보 상태**: `scripts/scan-personal.sh` 통과 (차단 항목 0건) · 실 시크릿 0 · `.env` 실파일 0 · 페르소나 0 · 개인 절대경로 0 · 노하우 `references/` 0
+
+### 2026-07-27 갱신 — 페르소나 제거 + 신규 3카테고리
+
+**이번 갱신의 핵심**: 이 패키지에서 **사람 이름을 전부 걷어냈습니다.** 오너·에이전트 이름은 설치 시 그 PC의 오너가 정합니다(`install.sh` 대화형 또는 `--answers`).
+
+신규:
+- **`06-rules/`** — 글로벌 `CLAUDE.md` + 규칙 12개(보안·정합성·원칙·소통·워크플로·학습루프 등). 개인 고유명은 `{{OWNER_NAME}}` 류 placeholder로 치환됨. 개인 전용 2개(ERP 연동·모델 비교 로그)는 제외. 도구 전제가 있는 1개(브라우저)는 `rules/optional/`로 분리해 기본 설치에서 뺌
+- **`07-fablize/`** — 작업 방식 하네스 부트스트랩. **파일을 담지 않고** 설치 시 원본 레포에서 받아옴(제3자 저작물 재배포 회피)
+- **`08-shell/`** — `cc` alias + PATH. 프로파일엔 source 한 줄만 넣고 스니펫은 홈에 복사(패키지 폴더를 옮겨도 안 깨짐)
+- **`scripts/`** — 개인정보 게이트(`scan-personal.sh`) + 재생성 빌드 2종. 다음 갱신은 빌드 스크립트 실행으로 끝남
+
+정제·제외:
+- **심볼릭 링크 48개 제외** — `~/.claude/skills`의 상당수가 `~/.codex/skills`를 가리키는 링크였음. 복사하면 대상 PC에서 전부 깨짐. OMC 설치로 대체됨
+- **로컬에서 이미 깨진 스킬 15개 제외** — 존재하지 않는 대상을 가리키는 링크만 남아 있던 것
+- **`.env` 실파일 2개 차단** — 스킬 폴더에 실제 API 키가 든 `.env`가 있었음. 빌드에서 `.env`·`*.pem`·`*.key` 등을 복사 대상에서 제외하도록 고정
+- 스킬 45개 현행화 · `references/` 17개 제거 · 사내 시스템 실명 일반화
 
 ### 2026-07-09 갱신
 - 스킬 +2: **coupang-review-crawler**(쿠팡 리뷰 대량 크롤 + 주제별 그룹화·평점 파티션·xlsx) · **instagram-post-crawler**(인스타 공개 게시물 수집 — 계정 피드/해시태그, 공개만·best-effort) — 둘 다 insane-search 백엔드(차단·로그인월 우회) 기반
@@ -50,7 +70,7 @@ code-review-graph · mcp-obsidian · n8n-mcp · ui-inspector · octo-browser · 
 
 ---
 
-## 2. 플러그인 (`01-plugins/`) — 25개
+## 2. 플러그인 (`01-plugins/`) — 27개
 
 **마켓플레이스(7)**: claude-plugins-official · claude-code-plugins · bkit-marketplace · omc ★ · harness-marketplace · hyperframes · openai-codex
 
@@ -62,7 +82,7 @@ code-review-graph · mcp-obsidian · n8n-mcp · ui-inspector · octo-browser · 
 
 ---
 
-## 3. 독립 스킬 (`02-skills/`) — 110개
+## 3. 독립 스킬 (`02-skills/`) — 123개
 
 ### UI·디자인 (37)
 adapt · animate · arrange · audit · bolder · clarify · colorize · critique · delight · distill · extract · harden · normalize · onboard · optimize · overdrive · polish · quieter · typeset · frontend-design · taste-brutalist · taste-minimalist · taste-output · taste-redesign · taste-skill · taste-soft · taste-stitch · design-masters-reference · ui-ux-pro-max · ui-ux-translator · ui-inspector · gemini-design-expert · aidu-design-system · aidu-web-cloner · web-design-guidelines · designer-skill-builder · teach-impeccable
@@ -81,14 +101,14 @@ handoff · session-resume · obsidian-reference · obsidian-save · deploy · mc
 
 ---
 
-## 4. 슬래시 커맨드 (`03-commands/`) — 27개
+## 4. 슬래시 커맨드 (`03-commands/`) — 32개
 
 aidu-design-system · aidu-web-cloner · capacitor-ios-team · designer-skill-builder · detail-page-team · ecommerce-detail-page-planner · gemini-code · gemini-design · gemini-login · mcp-builder · n8n-code-js · n8n-code-python · n8n-expressions · n8n-mcp-tools · n8n-node-config · n8n-skills · n8n-validation · n8n-workflow-patterns · pre-deploy-review · programmatic-seo · project-context-builder · raw-press · remotion-best-practices · seo-audit · vercel-react-best-practices · web-design-guidelines · youtube-content-expander
 (+ `opsx/` 하위 10개: apply · archive · bulk-archive · continue · explore · ff · new · onboard · sync · verify)
 
 ---
 
-## 5. 에이전트 (`04-agents/`) — 22개
+## 5. 에이전트 (`04-agents/`) — 24개
 
 | 카테고리 | 에이전트 |
 |---|---|
@@ -104,7 +124,41 @@ aidu-design-system · aidu-web-cloner · capacitor-ios-team · designer-skill-bu
 
 ---
 
-## 6. 제외·정제 내역 (투명성)
+## 6. 글로벌 규칙 (`06-rules/`) — 12 (+선택 1)
+
+`~/.claude/CLAUDE.md` + `~/.claude/rules/`로 설치되어 **모든 프로젝트에 항상 적용**됩니다.
+
+**기본 12**: security(시크릿 평문 금지) · alignment(기획=구현 정합성) · principles(정직성·근본원인·추측 금지·YAGNI) · communication(열린 선택형 질문 금지) · workflow(세션 절차·UI 검증) · learning-loop(교정 시 lessons 축적) · intent-bridge · git · deployment · mcp · macos · emil-skills
+
+**선택 1** (`rules/optional/`): browser — 특정 브라우저 자동화 CLI 전제라 기본 설치 제외
+
+**제외 2**: 개인 ERP 연동 · 개인 모델 비교 로그 (원 소유자 환경 전용)
+
+치환 변수: `OWNER_NAME`·`OWNER_TITLE`·`OWNER_HANDLE`·`OWNER_EMAIL`·`GITHUB_ORG`·`PROJECTS_ROOT`·`CODE_ROOT`·`VAULT_ROOT`·`MODERATOR`·`AGENT_*` 10종
+
+## 7. 하네스 (`07-fablize/`)
+
+작업 방식 자체를 규정하는 블록(착수·검증·보고 규율). **파일 미포함** — 설치 시 공개 원본 레포에서 clone 후 원저자 `setup.sh` 실행. 실패해도 나머지 설치는 계속됩니다.
+
+설치 순서 제약: `06-rules` → `07-fablize` (역순이면 규칙 설치가 하네스 블록을 지움)
+
+## 8. 셸 (`08-shell/`)
+
+`cc` alias(권한 확인 생략 — 경고 포함) + `~/.local/bin`·npm 전역 PATH. 프로파일엔 마커로 감싼 source 한 줄만 추가하며, 스니펫 본체는 `~/.claude/lean-class.sh`로 복사됩니다.
+
+## 9. 빌드·검증 스크립트 (`scripts/`)
+
+| 스크립트 | 용도 |
+|---|---|
+| `scan-personal.sh` | **커밋 전 게이트.** 시크릿·페르소나·개인경로·조직명 검출. exit 1이면 커밋 금지 |
+| `build-rules.sh` | 로컬 `~/.claude/`에서 규칙을 다시 뽑아 치환·제외·optional 분리 |
+| `build-skills.sh` | 로컬 스킬·커맨드 동기화. symlink·깨진 스킬·`.env`·`references/` 자동 배제 |
+
+원 소유자 갱신 절차: `build-rules.sh && build-skills.sh && scan-personal.sh` → 통과 시 커밋
+
+---
+
+## 10. 제외·정제 내역 (투명성)
 
 ### 통째로 제외 (개인·회사 전용)
 | 유형 | 개수 | 성격 |

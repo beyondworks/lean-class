@@ -1,12 +1,26 @@
 ---
 name: obsidian-save
-description: 사용자가 "옵시디언에 저장해줘", "vault에 저장", "save to obsidian", "이거 저장해" 같은 자연어로 요청하면 발동. 현재 컨텍스트(질문/답변/검색결과/대화 요약/파일 분석 등)를 AI-Sessions-Vault의 Karpathy LLM Wiki 구조에 맞게 자동 분류·파일명 생성·frontmatter 부착하여 저장하고, index.md/log.md를 갱신한 뒤 vault-lint.sh로 정합 검증까지 수행한다. vault AGENTS.md의 강제 self-check 체크리스트(사전점검·save vs ingest 구분·projects 명명 차단·사후 lint)를 반드시 따른다. 사용자가 vault 구조를 몰라도 이 스킬이 모든 의사결정을 자동 처리한다.
+description: 사용자가 "옵시디언에 저장해줘", "vault에 저장", "save to obsidian", "이거 저장해" 같은 자연어로 요청하면 발동. 현재 컨텍스트(질문/답변/검색결과/대화 요약/파일 분석 등)를 {{VAULT_ROOT}}의 Karpathy LLM Wiki 구조에 맞게 자동 분류·파일명 생성·frontmatter 부착하여 저장하고, index.md/log.md를 갱신한 뒤 vault-lint.sh로 정합 검증까지 수행한다. vault AGENTS.md의 강제 self-check 체크리스트(사전점검·save vs ingest 구분·projects 명명 차단·사후 lint)를 반드시 따른다. 사용자가 vault 구조를 몰라도 이 스킬이 모든 의사결정을 자동 처리한다.
 triggers: ["옵시디언에 저장", "옵시디언 저장", "옵시디언에 보관", "vault에 저장", "vault 저장", "obsidian save", "save to obsidian", "save to vault", "이거 저장해", "이 답변 저장", "방금 답변 저장", "이거 wiki에 저장", "wiki에 저장"]
 ---
 
 # obsidian-save
 
 자연어 한 마디로 vault에 저장하는 스킬. 사용자는 카파시 패턴을 몰라도 됨. **단, 본 스킬은 vault 의 [`AGENTS.md`](AGENTS.md) 강제 self-check 체크리스트를 따른다 — 사전점검·lint 게이트·사후검증 모두 의무**.
+
+## 위임 우선 — obsidian-curator 서브에이전트 (맥락 보존)
+
+이 스킬이 발동하면 **메인 세션 본업 맥락 오염 방지를 위해 작업을 `obsidian-curator` 서브에이전트에 위임**한다.
+- Claude Code: `Agent` 도구로 `subagent_type: obsidian-curator` 스폰 → 저장할 내용 + 도메인 단서 전달 → **한 줄 요약만** 수신해 사용자에게 전달.
+- 서브에이전트는 저장에 더해 (조건부) 정제수 distill·스킬 freshness 점검·업그레이드 초안 제안까지 수행(스킬/하네스 확정은 사용자 승인).
+- 서브에이전트 사용 불가 환경에서만 아래 절차를 메인에서 인라인 수행(fallback).
+
+## git 동기화 (저장 후 — 다머신 공유, 필수)
+
+저장 + index/log 갱신 + lint PASS 후, 건드린 파일을 명시해 원격까지 반영한다 (다머신 맥락 공유):
+`bash scripts/vault-sync.sh push "save: <카테고리/경로 한 줄>" <새 페이지> index.md log.md`
+- 시크릿 값 게이트 내장 → 자동 차단. **`git add .`/`-A` 금지** (건드린 파일만 명시). origin 없으면 commit만(레포 연결 후 push).
+- 위임 시 `obsidian-curator`가 이 호출까지 수행한다. 로직 정본은 vault `scripts/vault-sync.sh`.
 
 ## 발동 조건
 
@@ -15,14 +29,25 @@ triggers: ["옵시디언에 저장", "옵시디언 저장", "옵시디언에 보
 - "vault에 저장", "wiki에 저장"
 - "obsidian save", "save to obsidian", "save to vault"
 - "이거 저장해", "이 답변 저장", "방금 답변 저장"
+- 외부 URL을 주며 "정독해", "학습해", "외워", "내용을 익혀", "우리 시스템에 반영해"처럼 장기 학습/내재화를 요구
 
 발동 시 사용자에게 "어떤 카테고리로 저장할까요?" 같은 되묻기 **없이** 자동 결정 후 진행. 결과가 마음에 안 들면 사용자가 사후에 수정 요청한다.
+
+### 외부 자료 정독/학습 요청 처리
+
+사용자가 URL·논문·영상·문서와 함께 "정독/100번 보고/토씨하나 틀리지 않게 외워/학습"처럼 강하게 말하면, 실제로 반복 조회를 가장하지 말고 **검증 가능한 ingest**로 답한다.
+
+1. 공식/원문 페이지에서 본문과 메타데이터를 추출한다.
+2. 저작권 자료는 전문을 대화에 재배포하지 않는다. 대신 raw에는 내부 grounding용 snapshot을 보존하고 source note에는 요약·운영 규칙·적용 포인트만 쓴다.
+3. raw → wiki/sources → 관련 MOC/playbook/context cross-update → index.md/log.md → vault-lint 순서로 처리한다.
+4. 필요하면 Company Truth Source DB `external_sources`에도 source registry를 남기고 readback한다.
+5. 최종 보고에는 "몇 번 봤다/완벽히 외웠다" 같은 검증 불가능한 표현 대신, 추출 문자 수·저장 경로·cross-update·lint/DB 검증 결과를 제시한다.
 
 ## 🚨 사전점검 (0단계, 건너뛰기 금지)
 
 **저장 작업 시작 전 반드시 다음을 수행한다. 빠지면 카파시 설계가 무너진다.**
 
-1. **vault `AGENTS.md` 읽기** — `~/Documents/AI-Sessions-Vault/AGENTS.md`. 작업 종류별(save/ingest/lint/handoff/destructive) 체크리스트 확인
+1. **vault `AGENTS.md` 읽기** — `{{VAULT_ROOT}}/AGENTS.md`. 작업 종류별(save/ingest/lint/handoff/destructive) 체크리스트 확인
 2. **vault `index.md` 읽기** — 같은 슬러그가 이미 있는지, 카테고리 정리 큐가 있는지 확인
 3. **`bash scripts/vault-lint.sh --quiet` 실행** — vault 루트에서. exit 0 이 아니면:
    - 명명 위반·broken link 등 fail 항목이 있으면 → 사용자에게 "vault lint 실패 상태. 저장 진행 전 정리 권장. 그래도 진행?" 1회 확인
@@ -35,7 +60,7 @@ triggers: ["옵시디언에 저장", "옵시디언 저장", "옵시디언에 보
 ## 대상 vault
 
 ```
-~/Documents/AI-Sessions-Vault/
+{{VAULT_ROOT}}/
 ├── CLAUDE.md       (운영 규약 — 따른다)
 ├── index.md        (저장 후 갱신 대상)
 ├── log.md          (저장 후 append 대상)
@@ -46,6 +71,8 @@ triggers: ["옵시디언에 저장", "옵시디언 저장", "옵시디언에 보
 
 ## 프로젝트별 참고 자료
 
+- lean-native 에이전트 공통 진실원, 역할별 artifact 타입, "자동 동기화 완료" 금지 표현은 `references/lean-native-agent-truth-source.md`를 확인한다.
+- 외부 URL을 "정독/학습/외워" 달라는 요청을 raw→source→cross-update→lint/DB로 내재화하는 패턴은 `references/external-article-learning-ingest.md`를 확인한다.
 
 ## Handoff / scheduled status note 처리
 
@@ -104,7 +131,7 @@ triggers: ["옵시디언에 저장", "옵시디언 저장", "옵시디언에 보
 - **decisions**: `YYYY-MM-DD-{kebab-slug}.md` (시점 추적 필요)
 - **그 외 (concepts/playbooks/entities/errors/synthesis)**: `{kebab-slug}.md` — **날짜 접두사 금지**
   - 예: `llm-wiki-pattern.md`, `vercel-vs-self-host.md`
-- **projects**: **프로젝트명만** (`myproject.md`, `ttstudio.md`, `hermes.md`)
+- **projects**: **프로젝트명만** (`linkbrain.md`, `ttstudio.md`, `hermes.md`)
   - **금지 패턴 (lint 가 차단)**: `-session`, `-production`, `-2026-MM-DD`, `*-session-YYYY-MM-DD`
   - 같은 프로젝트의 새 세션은 별도 페이지 만들지 말 것 — 기존 페이지의 `## 세션 로그 YYYY-MM-DD` 섹션으로 append
   - `wiki/projects/{프로젝트}.md` 가 없으면 stub 생성 (frontmatter + 한 문장 요약), 본문 append
@@ -175,9 +202,11 @@ tags: []
 
 `Write` 도구로 절대 경로에 저장. 폴더가 없으면 `mkdir -p` 먼저.
 
+**도메인 태그 + 출처 표식 (필수)**: 위 frontmatter `tags`에 도메인 태그 1개 추가 — 디자인=`domain/design`, 개발=`domain/dev`, 콘텐츠/영상=`domain/content` (해당 없으면 생략). 사람이 요청한 저장이므로 `author: human` (+ 큐레이션 정본이면 `curated: true`)도 단다. 그래프 도메인 자동 채색 + 충돌0 수집용. 정제 흐름(레퍼런스→해체→이해→규칙→모듈화→스킬)·도메인 MOC 단일작성자 규칙의 정본은 vault `AI-Sessions/wiki/playbooks/domain-knowledge-pipeline.md`. **도메인 MOC(`wiki/synthesis/<domain>-moc.md`)는 통째 덮어쓰기 금지 — partial-edit만.**
+
 ### 5. index.md + log.md 갱신
 
-**index.md**: vault 루트의 `~/Documents/AI-Sessions-Vault/index.md`. 해당 카테고리 섹션에 한 줄 추가:
+**index.md**: vault 루트의 `{{VAULT_ROOT}}/index.md`. 해당 카테고리 섹션에 한 줄 추가:
 ```markdown
 - [[file-stem]] — 한 줄 요약 (status)
 ```
@@ -189,7 +218,7 @@ tags: []
 
 카테고리 분포 표의 해당 카테고리 카운트 +1.
 
-**log.md**: vault 루트의 `~/Documents/AI-Sessions-Vault/log.md`. append-only로 새 항목:
+**log.md**: vault 루트의 `{{VAULT_ROOT}}/log.md`. append-only로 새 항목:
 ```markdown
 
 ## [YYYY-MM-DD HH:MM] save | wiki/{category}/{file-stem}
@@ -203,7 +232,7 @@ tags: []
 저장 후 다음을 반드시 수행:
 
 ```bash
-cd ~/Documents/AI-Sessions-Vault
+cd {{VAULT_ROOT}}
 bash scripts/vault-lint.sh --quiet
 echo "exit: $?"
 ```
@@ -230,7 +259,7 @@ echo "exit: $?"
 
 ```
 저장 완료.
-- 경로: ~/Documents/AI-Sessions-Vault/AI-Sessions/wiki/{category}/{file-name}.md
+- 경로: {{VAULT_ROOT}}/AI-Sessions/wiki/{category}/{file-name}.md
 - 카테고리: {category} (자동 결정 근거: {1줄})
 - 링크: [[{file-stem}]]
 - 갱신: index.md, log.md
@@ -242,7 +271,7 @@ echo "exit: $?"
 
 ### 진행 설명 언어
 
-사용자에게 진행 과정을 설명할 때는 내부 도구명 대신 한글 의미 중심으로 말한다.
+{{OWNER_TITLE}}에게 진행 과정을 설명할 때는 내부 도구명 대신 한글 의미 중심으로 말한다.
 
 예:
 - `skill_view` → `옵시디언 저장 규칙을 확인했어요.`

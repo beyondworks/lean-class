@@ -1,5 +1,5 @@
 {
-  "_README": "이 파일은 Claude Code MCP 설정 템플릿입니다. <YOUR_...> 자리에 본인 키를 직접 넣은 뒤, 내용을 프로젝트 루트의 .mcp.json 또는 ~/.claude.json 의 mcpServers 에 병합하세요. 키 발급처는 .env.example 와 README.md 참고. 로컬 설치가 필요한 MCP(code-review-graph, mcp-obsidian, n8n-mcp, ui-inspector, octo-browser, pencil)는 여기에 없습니다 — README.md 의 '고급: 로컬 의존 MCP' 절을 보세요.",
+  "_README": "이 파일은 Claude Code MCP 설정 템플릿입니다. <YOUR_...> 자리에 본인 키를 직접 넣은 뒤, 내용을 프로젝트 루트의 .mcp.json 또는 ~/.claude.json 의 mcpServers 에 병합하세요. 키 발급처는 README.md 참고. 로컬 설치·실행이 필요한 MCP(code-review-graph, mcp-obsidian, n8n-mcp, ui-inspector, agentation, octo-browser, pencil)는 여기에 없습니다 — 각자 로컬 앱이나 서버가 떠 있어야 동작하므로 README.md 의 '고급: 로컬 의존 MCP' 절을 보세요.",
   "mcpServers": {
     "context7": {
       "command": "npx",
@@ -24,6 +24,16 @@
     "design-systems": {
       "type": "http",
       "url": "https://design-systems-mcp.southleft.com/mcp"
+    },
+    "higgsfield": {
+      "type": "http",
+      "url": "https://mcp.higgsfield.ai/mcp",
+      "_note": "이미지·영상·음성 생성. 브라우저 로그인으로 인증하며 크레딧은 계정에 붙습니다. API 키 불필요."
+    },
+    "kling": {
+      "type": "http",
+      "url": "https://kling.ai/mcp",
+      "_note": "이미지·영상 생성(text/image-to-video). 브라우저 로그인 인증. 생성 1건마다 크레딧이 소모되니 테스트 호출을 남발하지 마세요."
     },
     "stitch": {
       "command": "npx",

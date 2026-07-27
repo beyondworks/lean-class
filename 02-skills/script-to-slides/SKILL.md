@@ -10,7 +10,7 @@ license: Proprietary
 
 markdown 대본을 **16:9 캐러셀로 슬라이드되는 웹사이트**로 만든다. reveal.js류가 아니라 **순수 vanilla HTML/CSS/JS**다(의존성 0, 정적 서버로 바로 뜸).
 
-> 골든 레퍼런스: 이 스킬의 모든 규칙은 검증된 웨비나 슬라이드 1건에서 추출했고, `references/assets/`(theme.css·carousel.js·presenter.*)에 검증본을 박제했다 — 별도 경로 없이 이 폴더만으로 자립한다.
+> 골든 레퍼런스: `{{PROJECTS_ROOT}}/AI-Native/docs/content/webinar-agent-intro/web/` — 이 스킬의 모든 규칙은 거기서 추출했고, `references/assets/`에 검증본을 박제했다.
 
 ## 산출물 구조 (고정)
 ```
@@ -83,5 +83,5 @@ cd <out> && python3 -m http.server 4601 &   # 또는 npx serve
 - **발표자 노트**: `notes.js`의 `DEFAULT_NOTES[]`(슬라이드별 구어체 스크립트) → 발표자 모드에서 자동저장·글자크기 조절.
 
 ## status
-- **seed** — 이 스킬은 골든 레퍼런스 1건(webinar-agent-intro)에서 추출했다. 실사용 2건+ / 품질 채점 / 유건 승인 후 **active** 승격.
+- **seed** — 이 스킬은 골든 레퍼런스 1건(webinar-agent-intro)에서 추출했다. 실사용 2건+ / 품질 채점 / 오너 승인 후 **active** 승격.
 - design 도메인 → 볼트 `wiki/harnesses/design.md` 의 `provenance.fed_by` 후보로 연결 가능.
