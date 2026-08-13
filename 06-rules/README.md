@@ -6,24 +6,22 @@ Claude Code가 **모든 프로젝트에서 항상 지키는 규칙** 묶음입�
 
 ```
 ~/.claude/CLAUDE.md      ← CLAUDE.template.md (치환 후)
-~/.claude/rules/*.md     ← rules/ (12개)
+~/.claude/rules/*.md     ← rules/ (10개)
 ```
 
 `CLAUDE.md`가 `rules/`를 참조하는 구조라, 규칙 하나를 고칠 때 본체를 건드리지 않습니다.
 
 ---
 
-## 담긴 규칙 (12)
+## 담긴 규칙 (10)
 
 | 파일 | 내용 |
 |---|---|
 | `security.md` | **시크릿 평문 금지** — 문서·커밋·로그 어디에도. 환경변수는 이름·위치만 |
-| `alignment.md` | 기획=설계=구현 정합성. North Star 고정, 표류 감지 시 즉시 정지 |
 | `principles.md` | 정직성·근본원인·추측 금지·YAGNI. 확신도 표기 |
 | `communication.md` | 열린 선택형 질문 금지(판단 후 승인만 받기), 자가 인증 배지 금지 |
-| `workflow.md` | 세션 시작·종료 절차, UI 변경 검증 플로우, 계획 우선 기준 |
+| `workflow.md` | 세션 시작·종료 절차, UI 변경 검증 플로우 |
 | `learning-loop.md` | 교정받을 때마다 lessons에 한 줄 축적 → 같은 실수 반복 방지 |
-| `intent-bridge.md` | 자연어 요청 → 내부 스펙 변환, Metric Lock |
 | `git.md` | 브랜치·커밋 규칙, **레포 경계**(오너가 채울 표) |
 | `deployment.md` | 배포 후 실제 응답 검증 필수 |
 | `mcp.md` · `macos.md` | 도구·OS 함정 모음 |

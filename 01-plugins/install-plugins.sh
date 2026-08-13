@@ -12,10 +12,10 @@ markets=(
   "anthropics/claude-plugins-official"   # 공식 플러그인 모음
   "anthropics/claude-code"               # claude-code-plugins
   "popup-studio-ai/bkit-claude-code"     # bkit
-  "Yeachan-Heo/oh-my-claudecode"         # OMC ★
-  "revfactory/harness"                   # harness
+  # [격리 2026-08-05] "Yeachan-Heo/oh-my-claudecode"         # OMC ★
+  # [격리 2026-08-05] "revfactory/harness"                   # harness
   "heygen-com/hyperframes"               # hyperframes
-  "openai/codex-plugin-cc"               # codex
+  # [격리 2026-08-05] "openai/codex-plugin-cc"               # codex
   "fivetaku/gptaku_plugins"              # gptaku — insane-search 등 ★
   "StarTrail-org/PixelRAG"               # pixelrag — pixelbrowse
 )
@@ -38,21 +38,21 @@ plugins=(
   "frontend-design@claude-plugins-official"
   "huggingface-skills@claude-plugins-official"
   "Notion@claude-plugins-official"
-  "ralph-loop@claude-plugins-official"
+  # [격리 2026-08-05] "ralph-loop@claude-plugins-official"
   "playwright@claude-plugins-official"
   "security-guidance@claude-plugins-official"
   "slack@claude-plugins-official"
-  "vercel@claude-plugins-official"
-  "superpowers@claude-plugins-official"
+  # [격리 2026-08-05] "vercel@claude-plugins-official"
+  # [격리 2026-08-05] "superpowers@claude-plugins-official"
   "swift-lsp@claude-plugins-official"
   "telegram@claude-plugins-official"
   "discord@claude-plugins-official"
   # 서드파티 마켓플레이스
   "bkit@bkit-marketplace"
-  "oh-my-claudecode@omc"                 # ★ 멀티에이전트 오케스트레이션
-  "harness@harness-marketplace"
+  # [격리 2026-08-05] "oh-my-claudecode@omc"                 # ★ 멀티에이전트 오케스트레이션
+  # [격리 2026-08-05] "harness@harness-marketplace"
   "hyperframes@hyperframes"
-  "codex@openai-codex"
+  # [격리 2026-08-05] "codex@openai-codex"
   "insane-search@gptaku-plugins"         # ★ 차단 사이트 적응형 접근 (WAF 우회)
   "pixelbrowse@pixelrag-plugins"         # 픽셀 기반 브라우즈/스크린샷
 )

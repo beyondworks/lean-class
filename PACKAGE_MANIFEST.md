@@ -8,11 +8,11 @@
 | 카테고리 | 포함 | 폴더 |
 |---|---:|---|
 | MCP 서버 | 14 | `00-mcp/` |
-| 플러그인 | 27 | `01-plugins/` |
+| 플러그인 | 21 (6 격리) | `01-plugins/` |
 | 스킬 | 123 | `02-skills/` |
 | 슬래시 커맨드 | 32 | `03-commands/` |
 | 에이전트 | 24 | `04-agents/` |
-| **글로벌 규칙** | **12 (+선택 1)** | **`06-rules/`** |
+| **글로벌 규칙** | **10 (+선택 1)** | **`06-rules/`** |
 | **하네스** | **1 (부트스트랩)** | **`07-fablize/`** |
 | **셸 설정** | **—** | **`08-shell/`** |
 
@@ -70,13 +70,16 @@ code-review-graph · mcp-obsidian · n8n-mcp · ui-inspector · octo-browser · 
 
 ---
 
-## 2. 플러그인 (`01-plugins/`) — 27개
+## 2. 플러그인 (`01-plugins/`) — 21개 (6 격리)
 
-**마켓플레이스(7)**: claude-plugins-official · claude-code-plugins · bkit-marketplace · omc ★ · harness-marketplace · hyperframes · openai-codex
+**마켓플레이스(5 활성)**: claude-plugins-official · claude-code-plugins · bkit-marketplace · hyperframes · gptaku-plugins
+**마켓플레이스(3 격리 2026-08-05)**: ~~omc~~ · ~~harness-marketplace~~ · ~~openai-codex~~
 
-**공식(20)**: context7 · claude-md-management · claude-code-setup · code-review · firecrawl · firebase · figma · github · frontend-design · huggingface-skills · Notion · ralph-loop · playwright · security-guidance · slack · vercel · superpowers · swift-lsp · telegram · discord
+**공식(16 활성)**: context7 · claude-md-management · claude-code-setup · code-review · firecrawl · firebase · figma · github · frontend-design · huggingface-skills · Notion · playwright · security-guidance · slack · swift-lsp · telegram · discord
+**공식(3 격리 2026-08-05)**: ~~ralph-loop~~ · ~~vercel~~ · ~~superpowers~~
 
-**서드파티(5)**: **oh-my-claudecode ★** · bkit · harness · hyperframes · codex
+**서드파티(3 활성)**: bkit · hyperframes · insane-search · pixelbrowse
+**서드파티(3 격리 2026-08-05)**: ~~oh-my-claudecode~~ · ~~harness~~ · ~~codex~~
 
 > 플러그인은 자신의 번들 스킬·에이전트·MCP·커맨드를 함께 가져옵니다.
 
@@ -124,11 +127,11 @@ aidu-design-system · aidu-web-cloner · capacitor-ios-team · designer-skill-bu
 
 ---
 
-## 6. 글로벌 규칙 (`06-rules/`) — 12 (+선택 1)
+## 6. 글로벌 규칙 (`06-rules/`) — 10 (+선택 1)
 
 `~/.claude/CLAUDE.md` + `~/.claude/rules/`로 설치되어 **모든 프로젝트에 항상 적용**됩니다.
 
-**기본 12**: security(시크릿 평문 금지) · alignment(기획=구현 정합성) · principles(정직성·근본원인·추측 금지·YAGNI) · communication(열린 선택형 질문 금지) · workflow(세션 절차·UI 검증) · learning-loop(교정 시 lessons 축적) · intent-bridge · git · deployment · mcp · macos · emil-skills
+**기본 10**: security(시크릿 평문 금지) · principles(정직성·근본원인·추측 금지·YAGNI) · communication(열린 선택형 질문 금지) · workflow(세션 절차·UI 검증) · learning-loop(교정 시 lessons 축적) · git · deployment · mcp · macos · emil-skills
 
 **선택 1** (`rules/optional/`): browser — 특정 브라우저 자동화 CLI 전제라 기본 설치 제외
 
