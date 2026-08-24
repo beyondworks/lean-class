@@ -1,3 +1,5 @@
+<!-- 2026-08-05 하네스 격리: OMC 블록·Plan Mode Default·Verification Before Done(자체검증루프)·정렬 게이트·모델 A/B 상시 규칙을 이 파일에서 제거하고, 원본 전문과 복원 방법은 ~/claude-harness-quarantine/2026-08-05/ 에 보존 (MANIFEST.md 참조). 삭제 아님 — 격리. -->
+
 # 🔒 보안 절대 규칙 (최우선)
 
 **시크릿 평문 기입 금지** — 핸드오버/세션요약/README/CLAUDE.md/MEMORY.md/커밋메시지/코드주석/PR/이슈/채팅/메일 **어디에도** API 키·토큰·DB 접속문자열·비밀번호·OAuth secret·JWT secret·webhook secret 평문 절대 금지.
@@ -81,17 +83,4 @@
 - **No Laziness:** Find root causes. No temporary fixes. Senior developer standards.
 - **Minimal Impact:** Changes should only touch what's necessary. Avoid introducing bugs.
 </aside>
-
-## Operating mode (Opus 전용 — auto-route by task signal)
-
-**모델 게이트 (2026-08-05 유건 지시)**: 이 섹션 전체는 현재 모델이 **Opus 계열(`claude-opus-*`)일 때만** 적용한다. **Fable 계열(`claude-fable-*`)을 포함한 그 외 모델에서는 이 섹션 전체를 무시한다** — 팩 로드, `goals.py`, 아래 모든 프로토콜 포함. (Fable은 이 행동이 네이티브라 이식 장치가 불필요하다.)
-
-Apply what the task signals; with no signal, baseline only. Read each pack only when needed. Routing: smallest matching discipline only, overlap only when genuinely multi-category, mimic observable behavior only.
-
-- **[restraint — how Fable actually works]** Act first: begin with the first tool call, no plan narration before acting (speak first only for a genuinely blocking question). Build the deliverable in one coherent pass, then verify once with the most direct observation of the changed behavior; when it passes, stop — do not re-verify green results, and do not re-edit a file without an observed failure, new evidence, or a changed requirement. Report as a short note, not a document: one line of outcome (what, where, verified or not) + terse evidence bullets + unverified items if any. No headers or tables in the final report, no process story, no unsolicited next steps.
-- **[always]** Lead with the outcome · stay within the requested scope (no incidental refactors) · ground completion claims in this session's tool results · confirm before destructive or hard-to-reverse actions.
-- **[sequential multi-story]** Run `python3 {{FABLIZE_DIR}}/scripts/goals.py`: create → next → checkpoint (with evidence) → final verification gate (no completion without `--verify-cmd` and `--verify-evidence`). Run from the repo root; state in `./.fablize/` (resume with `status`). A single atomic deliverable is NOT multi-story even with many numbered requirements — skip and proceed directly.
-- **[debugging / test failure / unknown cause / review]** Follow `{{FABLIZE_DIR}}/packs/investigation-protocol.txt`: reproduce first → 3+ competing hypotheses → evidence per hypothesis → full causal chain → verify before/after → report rejected hypotheses.
-- **[render/executable artifact: HTML, SVG, game, UI, chart]** Follow `{{FABLIZE_DIR}}/packs/verification-grounding-pack.txt` grounding loop: run it in the real renderer → observe the output → fix what you see → re-run. A static check is not observation.
-- **[hard or ambiguous task]** Adaptive thinking scales with difficulty automatically. To go higher, recommend `/effort xhigh` to the user. Depth (capability) cannot be raised: if stuck 2+ times or out-of-spec discovery is needed, first commit the honest conclusion to the deliverable — "could not be obtained/verified" is itself a valid conclusion; state it as the result — then report the limit. Never end by stalling or asking for hints without committing what you established.
 

@@ -53,6 +53,12 @@ description: AI 영화·영상 샷을 Higgsfield Cinema Studio·Seedance·Kling�
 - **Kling**: `mcp__kling__who_am_i`(먼저 호출, 파라미터 규격 확인) → `text_to_image` / `image_to_image` / `text_to_video` / `image_to_video` / `file_upload`. **매 job이 과금** — 시험 삼기 금지, 불확실하면 먼저 질문.
 - 두 백엔드 모두 위 10원칙(특히 proof-gate·slop·test-before-commit)이 동일하게 적용됨.
 
+## Marketing Studio 운용
+
+광고·UGC·제품 영상을 **실제로 발주**할 때의 함정(아바타가 조용히 바뀜, NSFW 오차단 어휘, 한국어 대사
+훼손, 상품 URL 임포트 실패, 크레딧·시간 예산)은 **`higgsfield-mcp-ops` 스킬**에 있다. 이 스킬은
+"어떻게 잘 찍나", 그쪽은 "왜 실패했고 어떻게 피하나".
+
 ## 상세 규칙
 
 전체 레슨 정제본은 **`references/pipeline-playbook.md`** 를 읽어라 — 모델 선택 전체 표, 로케이션 6-lock, 캐릭터 시트 프롬프트 템플릿, slop 모델별 지문, Seedance 진단 트리, Leera 4-D 프롬프트법, 캡스톤 워크플로가 들어 있다.

@@ -30,4 +30,5 @@
 - 다단계 fallback 테스트: 각 strategy의 skip 조건이 다음 strategy에 미치는 영향 검증
 - 단위 테스트 통과 후 E2E로 실제 데이터 흐름 재확인 (정규화 파이프라인 등)
 
+<!-- "계획 우선 기본값" 섹션은 2026-08-05 하네스 격리로 제거 — 원본: ~/claude-harness-quarantine/2026-08-05/rules-workflow.md.orig -->
 - 작업 중 꼬이면 즉시 멈추고 재계획 (점진적 패치 금지 원칙과 연결)

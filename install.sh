@@ -93,7 +93,7 @@ backup() { [ -e "$1" ] && mv "$1" "${1}.bak-${TS}"; }
 
 # ---------- 1) 스킬 ----------
 echo ""
-echo "[1/7] 스킬"
+echo "[1/8] 스킬"
 sc=0; bk=0
 for d in "$SCRIPT_DIR"/02-skills/*/; do
   [ -d "$d" ] || continue
@@ -104,7 +104,7 @@ done
 echo "      설치 ${sc}개 / 기존 백업 ${bk}개"
 
 # ---------- 2) 커맨드 · 에이전트 ----------
-echo "[2/7] 커맨드 · 에이전트"
+echo "[2/8] 커맨드 · 에이전트"
 cp -R "$SCRIPT_DIR"/03-commands/. "$CLAUDE_DIR/commands/" 2>/dev/null
 cp -R "$SCRIPT_DIR"/04-agents/.   "$CLAUDE_DIR/agents/"   2>/dev/null
 echo "      완료"
@@ -112,7 +112,7 @@ echo "      완료"
 # ---------- 3) 글로벌 규칙 (치환) ----------
 # fablize 보다 먼저 와야 한다. fablize 가 CLAUDE.md 끝에 블록을 덧붙이므로,
 # 순서가 뒤집히면 여기서 덮어써서 그 블록이 날아간다.
-echo "[3/7] 글로벌 규칙 (오너 정보로 치환)"
+echo "[3/8] 글로벌 규칙 (오너 정보로 치환)"
 if [ -d "$SCRIPT_DIR/06-rules" ]; then
   TMP="$(mktemp -d)"
   cp "$SCRIPT_DIR/06-rules/CLAUDE.template.md" "$TMP/CLAUDE.md"
@@ -158,7 +158,7 @@ else
 fi
 
 # ---------- 4) 플러그인 ----------
-echo "[4/7] 플러그인"
+echo "[4/8] 플러그인"
 if command -v claude >/dev/null 2>&1; then
   bash "$SCRIPT_DIR/01-plugins/install-plugins.sh" >/dev/null 2>&1 \
     && echo "      완료" \
@@ -168,7 +168,7 @@ else
 fi
 
 # ---------- 5) MCP ----------
-echo "[5/7] MCP (키 불필요한 것만 자동)"
+echo "[5/8] MCP (키 불필요한 것만 자동)"
 if command -v claude >/dev/null 2>&1; then
   claude mcp add context7            -- npx -y @upstash/context7-mcp@latest >/dev/null 2>&1
   claude mcp add sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking >/dev/null 2>&1
@@ -181,11 +181,15 @@ else
 fi
 
 # ---------- 6) 하네스 ----------
-echo "[6/7] 작업 방식 하네스 (fablize)"
+echo "[6/8] 작업 방식 하네스 (fablize)"
 bash "$SCRIPT_DIR/07-fablize/install-fablize.sh" global 2>&1 | sed 's/^/      /'
 
 # ---------- 7) 셸 ----------
-echo "[7/7] 셸 설정"
+echo "[7/8] 한국어 출력 스타일"
+bash "$SCRIPT_DIR/09-output-styles/install-output-styles.sh" 2>&1 | sed 's/^/      /'
+echo ""
+
+echo "[8/8] 셸 설정"
 bash "$SCRIPT_DIR/08-shell/install-shell.sh" 2>&1 | sed 's/^/      /'
 
 echo ""
@@ -196,6 +200,7 @@ echo "  1. Claude Code 를 재시작하세요."
 echo "  2. 새 터미널을 열거나: source ~/.zshrc"
 echo "  3. 호칭·에이전트 이름 수정: ~/.claude/CLAUDE.md"
 echo "  4. 키가 필요한 MCP: 00-mcp/README.md"
+echo "  5. 한국어 출력 스타일은 새 세션부터 적용됩니다."
 echo ""
 echo "  기존 파일은 .bak-${TS} 로 백업했습니다."
 echo "=================================================="

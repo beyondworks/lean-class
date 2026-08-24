@@ -1,0 +1,48 @@
+#!/bin/bash
+# pp — drive Palmier Pro's local MCP server from the shell.
+#   pp tools                      list tool names
+#   pp spec <tool>                full JSON schema for one tool
+#   pp <tool> '<args json>'       call a tool, print its text result
+# The server is stateless per request: each call does its own handshake.
+set -euo pipefail
+U=${PALMIER_MCP_URL:-http://127.0.0.1:19789/mcp}
+CT="Content-Type: application/json"
+AC="Accept: application/json, text/event-stream"
+
+rpc() { # $1=method $2=params-json  -> raw json result line
+  local sid
+  sid=$(curl -s -m 10 -D - -o /dev/null -X POST "$U" -H "$CT" -H "$AC" \
+    -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"pp","version":"1"}}}' \
+    | grep -i 'mcp-session-id' | tr -d '\r' | awk '{print $2}')
+  [ -z "$sid" ] && { echo "Palmier Pro MCP not reachable at $U (is the app open?)" >&2; exit 1; }
+  curl -s -m 300 -X POST "$U" -H "$CT" -H "$AC" -H "MCP-Session-Id: $sid" \
+    -d "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"$1\",\"params\":$2}" \
+    | sed -n 's/^data: //p' | grep '^{'
+}
+
+case "${1:-}" in
+  tools)
+    rpc tools/list '{}' | python3 -c 'import json,sys;[print(t["name"]) for t in json.load(sys.stdin)["result"]["tools"]]'
+    ;;
+  spec)
+    rpc tools/list '{}' | python3 -c '
+import json,sys
+want=sys.argv[1]
+for t in json.load(sys.stdin)["result"]["tools"]:
+    if t["name"]==want:
+        print(t["description"]); print(); print(json.dumps(t["inputSchema"],indent=2,ensure_ascii=False))
+' "$2"
+    ;;
+  *)
+    tool=$1; args=${2:-'{}'}
+    rpc tools/call "{\"name\":\"$tool\",\"arguments\":$args}" | python3 -c '
+import json,sys
+r=json.load(sys.stdin)
+if "error" in r: print("ERROR:", json.dumps(r["error"],ensure_ascii=False)); sys.exit(1)
+res=r.get("result",{})
+for c in res.get("content",[]):
+    print(c.get("text",""))
+if res.get("isError"): sys.exit(1)
+'
+    ;;
+esac

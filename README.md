@@ -43,6 +43,7 @@ bash install.sh --answers owner.conf    # 파일에서 읽음 (owner.example.con
 | 4 | **플러그인** 27개 일괄 설치 |
 | 5 | **MCP** — 키 불필요한 것 자동 등록, 키 필요한 것은 안내 |
 | 6 | **하네스(fablize)** — 원본 레포에서 받아와 운영 블록 주입 |
+| 7 | **한국어 출력 스타일** — 원본 레포에서 받아와 설치 (새 세션부터 적용) |
 | 7 | **셸** — `cc` alias + PATH (프로파일에 source 한 줄) |
 
 기존 파일은 **덮어쓰지 않고** `.bak-<타임스탬프>`로 백업합니다. `rm -rf` 없음.
@@ -53,6 +54,7 @@ bash install.sh --answers owner.conf    # 파일에서 읽음 (owner.example.con
 
 - **글로벌 규칙** — 시크릿 평문 금지, 기획=구현 정합성, 추측 금지, 검증 없는 완료 선언 금지, 교정받으면 lessons에 축적
 - **하네스(fablize)** — 계획 나열 없이 착수 → 한 번에 완성 → 한 번 검증 → 짧은 노트로 보고
+- **한국어 출력 스타일** — 조사·어미를 떨어뜨려 의미 관계가 사라지는 것을 시스템 프롬프트 층위에서 막습니다
 
 둘 다 안 깔아도 나머지는 동작합니다. 다만 체감 차이는 여기서 가장 큽니다.
 
@@ -67,15 +69,16 @@ bash install.sh --answers owner.conf    # 파일에서 읽음 (owner.example.con
 | 스킬 | 123 | `02-skills/` |
 | 슬래시 커맨드 | 32 | `03-commands/` |
 | 에이전트 | 24 | `04-agents/` |
-| 글로벌 규칙 | 12 (+선택 1) | `06-rules/` |
+| 글로벌 규칙 | 10 (+선택 1) | `06-rules/` |
 | 하네스 | 1 | `07-fablize/` |
+| 출력 스타일 | 2 | `09-output-styles/` |
 | 셸 설정 | — | `08-shell/` |
 
 ```
 lean-class/
 ├── install.sh              ← 원샷 설치
 ├── owner.example.conf      ← 비대화형 설치용 답변 템플릿
-├── 00-mcp/ … 08-shell/     ← 카테고리별 자산
+├── 00-mcp/ … 09-output-styles/  ← 카테고리별 자산
 └── scripts/
     ├── scan-personal.sh    ← 개인정보·시크릿 게이트
     ├── build-rules.sh      ← 규칙 재생성 (원 소유자용)

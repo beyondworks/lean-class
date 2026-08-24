@@ -92,6 +92,10 @@ report "개인 절대경로" \
   block
 
 # "AI-Native UI"는 디자인 스타일 이름이라 통과시키고, 우리 레포/제품만 잡는다.
+report "고객사·교육기관 실명" \
+  '패스트캠퍼스|패캠|세무회계태양|taeyangtax|이중희|조성환|황한별|우강마케팅|어센트원|성일렌트카' \
+  block
+
 report "개인 조직·고객사 고유명" \
   '우강마케팅|성일렌트카|어센트원|ascent-?one|LeanAX|leanax|lean-org|agent-org|lean-crew|AI-Native[ /](인트라넷|앱|프로젝트|인프라)|AI-Native/' \
   block

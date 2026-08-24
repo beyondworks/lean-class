@@ -25,6 +25,9 @@ EXCLUDE_SKILLS=(
   intranet-style                                     # 특정 사내 인트라넷 전용
   aside-browser                                      # 개인 유료 브라우저 도구 전용
   wiki-autolink                                      # 개인 노트 버스(_bus) 전용
+  leankim-voice                                      # 오너 개인 화법 코퍼스 — 이름을 치환해도 내용이 정체성 그 자체
+  argo-security-surface-audit                        # 특정 데스크톱 앱 전용 (argo-* 계열)
+  course-script                                      # 오너 페르소나 빙의 규칙 + 본인 확정본 코퍼스 + 고객사 실명
 )
 
 # org-loop·볼트 등 개인 운영 인프라에 묶인 커맨드

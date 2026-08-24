@@ -18,6 +18,7 @@ markets=(
   # [격리 2026-08-05] "openai/codex-plugin-cc"               # codex
   "fivetaku/gptaku_plugins"              # gptaku — insane-search 등 ★
   "StarTrail-org/PixelRAG"               # pixelrag — pixelbrowse
+  # [제외] ponytail — 원 PC에서 로컬 디렉토리 마켓플레이스로 등록돼 있어 배포 불가(공개 출처 미확인)
 )
 for m in "${markets[@]}"; do
   echo "  + marketplace: $m"
@@ -54,6 +55,7 @@ plugins=(
   "hyperframes@hyperframes"
   # [격리 2026-08-05] "codex@openai-codex"
   "insane-search@gptaku-plugins"         # ★ 차단 사이트 적응형 접근 (WAF 우회)
+  "vibe-sunsang@gptaku-plugins"
   "pixelbrowse@pixelrag-plugins"         # 픽셀 기반 브라우즈/스크린샷
 )
 for p in "${plugins[@]}"; do
