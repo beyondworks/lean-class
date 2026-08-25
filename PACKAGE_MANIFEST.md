@@ -119,7 +119,7 @@ code-review-graph · mcp-obsidian · n8n-mcp · ui-inspector · octo-browser · 
 ## 3. 독립 스킬 (`02-skills/`) — 123개
 
 ### UI·디자인 (37)
-adapt · animate · arrange · audit · bolder · clarify · colorize · critique · delight · distill · extract · harden · normalize · onboard · optimize · overdrive · polish · quieter · typeset · frontend-design · taste-brutalist · taste-minimalist · taste-output · taste-redesign · taste-skill · taste-soft · taste-stitch · design-masters-reference · ui-ux-pro-max · ui-ux-translator · ui-inspector · gemini-design-expert · aidu-design-system · aidu-web-cloner · web-design-guidelines · designer-skill-builder · teach-impeccable
+adapt · animate · arrange · audit · bolder · clarify · colorize · critique · delight · distill · extract · harden · normalize · onboard · optimize · overdrive · polish · quieter · typeset · frontend-design · taste-brutalist · taste-minimalist · taste-output · taste-redesign · taste-skill · taste-soft · taste-stitch · design-masters-reference · ui-ux-pro-max · ui-ux-translator · ui-inspector · gemini-design-expert · aidu-design-system · aidu-web-cloner · intranet-style · web-design-guidelines · designer-skill-builder · teach-impeccable
 
 ### 영상·이미지 콘텐츠 (19)
 create-video · capcut-project · video-capture · ttstudio-voice · virtual-influencer-script · virtual-influencer-fashion-tryon · virtual-influencer-reference-remake · ducktape-character-sheet · strict-shortform-production-rules · codex-gptimage-heygen-video-wrapper · codex-gptimage2-heygen-media-generation · card-news · claude-watch · screenstudio-cut · analyze-bug-video · kling-image-to-video · grok-imagine · youtube-content-expander · yt-competitive-analysis
