@@ -28,22 +28,90 @@ EXCLUDE_SKILLS=(
   leankim-voice                                      # 오너 개인 화법 코퍼스 — 이름을 치환해도 내용이 정체성 그 자체
   argo-security-surface-audit                        # 특정 데스크톱 앱 전용 (argo-* 계열)
   course-script                                      # 오너 페르소나 빙의 규칙 + 본인 확정본 코퍼스 + 고객사 실명
+  # 2026-10-22 맥 two 합치기에서 새로 판정
+  argo-pg-drill argo-messenger-release argo-messenger-ios-store  # 특정 데스크톱 앱 전용 (argo-* 계열)
+  aimee-ship-gate                                    # 특정 데스크톱 앱 전용
+  leankim-mail                                       # 오너 개인 화법으로 쓰는 메일 — leankim-voice 와 같은 판정
+  macgyver-fix mac-clean                             # 오너 조직·오너 맥 전용 운영 절차
+  ego-browser                                        # 앱이 설치·관리하는 스킬(앱 설치 시 딸려옴)
+  obsidian-save obsidian-reference                   # 오너 볼트 규약 전용 — 패키지에 있는 기존 판을 그대로 둔다
+  synced                                             # claude.ai 계정에서 동기화되는 플러그인 사본
+  # 공개 전 사람 눈 검수(2026-10-22)에서 막힘이 나와 이번 판에서 뺀 것 — 정리 뒤 다음 판에 넣는다
+  detail-page-studio                                 # 실제 경쟁사 분석 기록·실전 상품 기록·개인 세션 파일(.omc)
+  saas-motion-film                                   # 예제가 실제 자사 제품·회사명, 글꼴 라이선스 미동봉
+  team-build team-save team-load                     # 오너 팀 구성·기기 규칙이 일반 규칙처럼 들어 있음
+  no-ai-slop                                         # 출처·라이선스 확인 전
 )
+
+# 오너 개인 제외 목록은 exclude.local.txt(커밋 안 함)
+EXCLUDE_LOCAL="${ROOT}/scripts/exclude.local.txt"
+if [ -f "$EXCLUDE_LOCAL" ]; then
+  while read -r -a names; do
+    for n in "${names[@]}"; do
+      [[ "$n" == \#* ]] && break
+      EXCLUDE_SKILLS+=("$n")
+    done
+  done < "$EXCLUDE_LOCAL"
+fi
 
 # org-loop·볼트 등 개인 운영 인프라에 묶인 커맨드
 EXCLUDE_CMDS=(
   board boot inbox delegate harvest start-loop skill-proposal
-  loop-time looptime lt raw-press
+  loop-time looptime lt raw-press agent-add
+  project-context-builder                            # 새 판에 오너 모델 선택 규칙이 들어감 — 기존 판 유지(2026-10-22)
 )
+
+# 스킬은 담되 그 안에서 뺄 파일 — 오너 개인 규칙·지적 기록이라 배포 대상이 아니다
+EXCLUDE_FILES=(
+  lean-polish/references/design-rulebook.md          # 오너 디자인 규칙집(규칙은 패키지에서 뺀다)
+  lean-polish/references/cases.md                    # 오너가 실제로 지적한 사례 기록
+)
+
+# 담은 파일 안에서 고칠 문장 — 뺀 파일·스킬을 가리키거나 오너 환경에만 있는 내용(파일|정규식|바꿀 말, 한 줄에 하나)
+PATCHES='
+lean-polish/SKILL.md|규칙은 2026-10-20 \{\{OWNER_TITLE\}\}이 전자책 그림 작업에서 직접 지적한 것들을 모은 것이다\(사례는 `references/cases.md`\)\.|규칙은 실제 시각물 작업에서 반복해서 나온 지적을 모은 것이다.
+lean-polish/SKILL.md|\n\*\*먼저 `references/design-rulebook.md`를 읽는다\.\*\*[^\n]*\n|\n
+lean-polish/SKILL.md|\(lean-deck, detail-page-studio 등\)|(슬라이드·상세페이지 스킬 등)
+lean-polish/SKILL.md|lean-deck·detail-page-studio·전자책 그림 작업|슬라이드·상세페이지·전자책 그림 작업
+lean-polish/SKILL.md|\n\n\n|\n\n
+lean-polish/SKILL.md|\n- `lean-deck`:[^\n]*|
+lean-polish/SKILL.md|\n- `detail-page-studio`:[^\n]*|
+lean-polish/references/svg-recipes.md|실제 생성기 전체는[^\n]*|아래 조각을 복사해 시작하면 된다.
+'
+
+# 링크라도 담는 원본 위치 — 오너가 직접 만든 스킬 원본을 모아 둔 곳(링크를 따라가 실제 파일을 복사)
+OWNED_LINK_ROOT="${HOME}/Tools/skills"
 
 python3 - "$ROOT" "$SRC_SKILLS" "$SRC_CMDS" \
   "$(IFS=,; echo "${EXCLUDE_SKILLS[*]}")" \
-  "$(IFS=,; echo "${EXCLUDE_CMDS[*]}")" <<'PY'
+  "$(IFS=,; echo "${EXCLUDE_CMDS[*]}")" \
+  "$(IFS=,; echo "${EXCLUDE_FILES[*]}")" "$OWNED_LINK_ROOT" "$PATCHES" <<'PY'
 import os, re, shutil, sys
 
 root, src_skills, src_cmds = sys.argv[1], sys.argv[2], sys.argv[3]
 ex_skills = set(filter(None, sys.argv[4].split(',')))
 ex_cmds   = set(filter(None, sys.argv[5].split(',')))
+ex_files  = set(filter(None, sys.argv[6].split(',')))
+owned_root = os.path.realpath(sys.argv[7])
+patches = [l.split('|', 2) for l in sys.argv[8].strip().splitlines() if l.count('|') >= 2]
+
+def apply_patches(skill_dir, name):
+    for rel, pat, rep in patches:
+        skill, _, sub = rel.partition('/')
+        fp = os.path.join(skill_dir, sub)
+        if skill != name or not os.path.isfile(fp):
+            continue
+        t = open(fp, encoding='utf-8').read()
+        n = re.sub(pat, rep.replace('\\n', '\n'), t)
+        if n == t:
+            print(f'    ⚠ 고칠 문장을 못 찾음: {rel} — {pat[:40]}')
+        else:
+            open(fp, 'w', encoding='utf-8').write(n)
+
+def owned_link(p):
+    """오너 원본 폴더(~/Tools/skills)를 가리키는 링크는 담는다. 그 밖의 링크는 OMC·codex 제공분이라 뺀다."""
+    target = os.path.realpath(p)
+    return target == owned_root or target.startswith(owned_root + os.sep)
 
 SUBS = [
     (r'/Users/[a-z0-9_.-]+/Documents/AI-Sessions-Vault', '{{VAULT_ROOT}}'),
@@ -58,6 +126,11 @@ SUBS = [
     (r'카맥', '{{AGENT_CORE}}'),     (r'에드나', '{{AGENT_DESIGN}}'),
     (r'비스트', '{{AGENT_MARKETING}}'), (r'월터', '{{AGENT_CONTENT}}'),
     (r'요다', '{{AGENT_EDU}}'),      (r'울프', '{{AGENT_SALES}}'),
+    (r'파인만', '{{AGENT_RESEARCH}}'), (r'다빈치', '{{AGENT_PLANNING}}'),
+    (r'오길비', '{{AGENT_CONTENT}}'), (r'맥가이버', '{{AGENT_CORE}}'),
+    (r'효원', '{{AGENT_MODERATOR}}'), (r'보스웰', '{{AGENT_CONTENT}}'),
+    # 공개 플랫폼 실명이라도 교육기관 실명 게이트에 걸리므로 일반 명사로
+    (r'인프런·노마드코더·패스트캠퍼스', '국내 온라인 강의 플랫폼'),
     (r'beyondworks', '{{GITHUB_ORG}}'), (r'leankim', '{{OWNER_HANDLE}}'),
     # 사내 시스템 실명 → 일반 명사
     (r'LeanAX/control-room', '사내 운영 콘솔'),
@@ -100,8 +173,10 @@ def sync(src, dest, exclude, kind):
         s = os.path.join(src, name)
         base = name[:-3] if name.endswith('.md') else name
 
-        if os.path.islink(s):                 # OMC/codex 제공분
+        if os.path.islink(s) and not owned_link(s):   # OMC/codex 제공분
             skipped_link += 1; continue
+        if os.path.islink(s):
+            s = os.path.realpath(s)
         if base in exclude:
             skipped_ex += 1; continue
         if name.startswith('.') or name.endswith('.bak') or name.endswith('.md.bak'):
@@ -143,8 +218,16 @@ def sync(src, dest, exclude, kind):
                         if not os.listdir(rp):
                             os.rmdir(rp)
                     dns.remove(sub)
+            for rel in ex_files:
+                skill, _, sub = rel.partition('/')
+                fp = os.path.join(d, sub)
+                if skill == name and os.path.isfile(fp):
+                    os.remove(fp)
+                elif skill == name and os.path.isdir(fp):
+                    shutil.rmtree(fp)
             for dp, _, fns in os.walk(d):
                 for fn in fns: scrub_file(os.path.join(dp, fn))
+            apply_patches(d, name)
         elif os.path.isfile(s):
             shutil.copy2(s, d); scrub_file(d)
         else:

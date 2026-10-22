@@ -4,7 +4,7 @@
 #
 #  사용법:
 #    bash scripts/scan-personal.sh          # 전체 스캔
-#    bash scripts/scan-personal.sh 06-rules # 특정 폴더만
+#    bash scripts/scan-personal.sh 02-skills # 특정 폴더만
 #
 #  exit 0 = 깨끗함 / exit 1 = 검출됨 (커밋 금지)
 #

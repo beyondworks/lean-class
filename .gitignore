@@ -29,3 +29,6 @@ node_modules/
 
 # 오너 정보 (설치 시 사용자가 만드는 답변 파일 — 커밋 금지)
 owner.conf
+
+# 오너 개인 스킬 제외 목록 (build-skills.sh 가 읽음 — 커밋 금지)
+scripts/exclude.local.txt

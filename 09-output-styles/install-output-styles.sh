@@ -5,7 +5,7 @@
 #  사용법:  bash 09-output-styles/install-output-styles.sh
 #
 #  왜 파일을 안 담고 받아오나:
-#    fluent-korean 은 제3자(snflkd, MIT)의 저작물이다. 07-fablize 와 같은 이유로
+#    fluent-korean 은 제3자(snflkd, MIT)의 저작물이다. 재배포를 피하려고
 #    파일을 복사해 넣지 않고 원본 레포에서 직접 받아온다.
 #
 #  하는 일:

@@ -18,6 +18,7 @@ markets=(
   # [격리 2026-08-05] "openai/codex-plugin-cc"               # codex
   "fivetaku/gptaku_plugins"              # gptaku — insane-search 등 ★
   "StarTrail-org/PixelRAG"               # pixelrag — pixelbrowse
+  # [선택 2026-10-22] "beyondworks/lean-forge-55"          # lean-forge-55 — Opus 5.5용 작업 하네스(원 PC에서 꺼 둠)
   # [제외] ponytail — 원 PC에서 로컬 디렉토리 마켓플레이스로 등록돼 있어 배포 불가(공개 출처 미확인)
 )
 for m in "${markets[@]}"; do

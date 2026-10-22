@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>Claude AI Kit install flow</title>
+<style>
+  :root {
+    --paper: #F7F4EE; --card: #FFFFFF; --line: #E6E0D6; --ink: #1B1A17;
+    --sub: #6B655C; --faint: #A39C90; --accent: #D9622B; --accent-soft: #FBEDE4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1600px; height: 580px; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: "Pretendard", "Apple SD Gothic Neo", sans-serif;
+    word-break: keep-all; overflow-wrap: break-word;
+    padding: 72px 96px; display: flex; flex-direction: column; gap: 44px;
+  }
+  h2 { font-size: 34px; font-weight: 800; letter-spacing: -.8px; }
+  h2 span { color: var(--sub); font-weight: 600; font-size: 22px; margin-left: 14px; letter-spacing: 0; }
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; position: relative; }
+  .step {
+    position: relative; min-height: 290px; padding: 30px 28px; border: 1px solid var(--line);
+    border-radius: 22px; background: var(--card); display: flex; flex-direction: column; gap: 14px;
+  }
+  .step:not(:last-child)::after {
+    content: ""; position: absolute; top: 50%; right: -19px; width: 14px; height: 14px;
+    border-top: 1.8px solid var(--faint); border-right: 1.8px solid var(--faint);
+    transform: translateY(-50%) rotate(45deg);
+  }
+  .num {
+    width: 40px; height: 40px; min-width: 40px; border-radius: 12px; background: var(--paper);
+    display: grid; place-items: center; font-size: 18px; font-weight: 800; white-space: nowrap;
+  }
+  .step > * { flex-shrink: 0; }
+  .nw { white-space: nowrap; }
+  .step.last { background: var(--accent-soft); border-color: #F2D3C1; }
+  .step.last .num { background: var(--accent); color: #fff; }
+  .title { font-size: 25px; font-weight: 800; letter-spacing: -.5px; }
+  .body { font-size: 18px; line-height: 1.6; color: var(--sub); text-wrap: pretty; }
+  code {
+    display: inline-block; margin-top: auto; padding: 8px 12px; border-radius: 10px;
+    background: var(--paper); border: 1px solid var(--line);
+    font-family: "SF Mono", Menlo, monospace; font-size: 15px; color: var(--ink); white-space: nowrap;
+  }
+  .step.last code { background: #fff; }
+</style>
+</head>
+<body>
+  <h2>설치는 네 걸음<span>규칙 파일은 만들지도, 덮어쓰지도 않습니다</span></h2>
+  <div class="flow">
+    <div class="step"><span class="num">1</span><span class="title">받기</span><span class="body">저장소를 내려받거나, <span class="nw">Claude Code에게</span> 주소만 건넵니다.</span><code>git clone …/lean-class</code></div>
+    <div class="step"><span class="num">2</span><span class="title">호칭 정하기</span><span class="body">이름과 부를 호칭을 묻습니다. 엔터만 쳐도 기본값으로 갑니다.</span><code>bash install.sh</code></div>
+    <div class="step"><span class="num">3</span><span class="title">한 벌 설치</span><span class="body">스킬·커맨드·에이전트를 복사하고 플러그인·MCP를 등록합니다. 기존 파일은 백업합니다.</span><code>~/.claude/skills …</code></div>
+    <div class="step last"><span class="num">4</span><span class="title">규칙은 당신이</span><span class="body">일하는 방식은 각자 다릅니다. CLAUDE.md는 직접 씁니다.</span><code>~/.claude/CLAUDE.md</code></div>
+  </div>
+</body>
+</html>

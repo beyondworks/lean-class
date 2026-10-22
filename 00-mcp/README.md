@@ -64,6 +64,7 @@ claude mcp add hyperbrowser --env HYPERBROWSER_API_KEY=본인키 -- npx -y hyper
 | n8n-mcp | n8n 워크플로 자동화 | 본인 n8n 인스턴스 + `N8N_API_URL`/`N8N_API_KEY` |
 | ui-inspector | 라이브 프리뷰 UI 인스펙터 | 강사 커스텀 — 별도 빌드 필요(범용 대체: 본 킷의 `ui-inspector` 스킬 참고) |
 | octo-browser | 안티디텍트 브라우저 제어 | Octo Browser 앱 + 로컬 브리지 |
+| rea | 역공학(앱·바이너리·웹 번들 분석) — `reverse-engineer-anything` 스킬과 짝 | `github.com/morluto/rea` 를 받아 그 README 대로 설치 후 `claude mcp add` |
 | pencil | 디자인 도구 연동 | VS Code Pencil 확장 |
 
 > 로컬 의존 MCP는 "강사가 이렇게 확장했다"는 참고용입니다. 수강생 환경에서 그대로 동작하지 않을 수 있으니, 위 사전 조건을 갖춘 뒤 직접 설정하세요.
