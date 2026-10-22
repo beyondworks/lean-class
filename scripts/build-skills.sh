@@ -41,17 +41,18 @@ EXCLUDE_SKILLS=(
   saas-motion-film                                   # 예제가 실제 자사 제품·회사명, 글꼴 라이선스 미동봉
   team-build team-save team-load                     # 오너 팀 구성·기기 규칙이 일반 규칙처럼 들어 있음
   no-ai-slop                                         # 출처·라이선스 확인 전
-  # 맥 one 합치기 사람 눈 검수(2026-10-22)에서 막힘이 나와 뺀 것 — 기존 판이 있는 것은 그 판을 그대로 둔다
-  beast-campaign davinci-plan edna-design ogilvy-copy wolff-deal wolff-legal  # 오너 팀 페르소나·조직 카드(org/)에 묶인 직무 절차
-  hyowon-learn                                       # 오너 클론 학습 절차 — 오너 일상 기록·고객사 실명
-  leankim-voice-v2 fastcampus-s1-style               # 오너 개인 화법 코퍼스·교육기관 실명 (leankim-voice 와 같은 판정)
-  lean-ppt lean-deck                                 # 교육기관·고객사 실명, 날짜 붙은 실제 작업 기록, 오너 강의 폴더 경로
-  lean-cut                                           # 예제가 자사 제품 리뷰 영상의 실제 편집 기록
-  lean-rec                                           # 실제 통화 상대 실명, 로컬 .venv 동봉
-  yt-thumbnail                                       # 오너 얼굴 사진·오너 채널 실측 기록
-  branded-video-pipeline capcut-subtitles            # 실제 협찬 광고주 실명·작업 기록
-  handoff video-insert-keyframes-ima2                # 새 판에 자사 제품명·페르소나 이름·광고주 실명이 들어감 — 기존 판 유지
 )
+
+# 오너 개인 제외 목록은 exclude.local.txt(커밋 안 함)
+EXCLUDE_LOCAL="${ROOT}/scripts/exclude.local.txt"
+if [ -f "$EXCLUDE_LOCAL" ]; then
+  while read -r -a names; do
+    for n in "${names[@]}"; do
+      [[ "$n" == \#* ]] && break
+      EXCLUDE_SKILLS+=("$n")
+    done
+  done < "$EXCLUDE_LOCAL"
+fi
 
 # org-loop·볼트 등 개인 운영 인프라에 묶인 커맨드
 EXCLUDE_CMDS=(
