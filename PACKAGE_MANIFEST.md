@@ -9,7 +9,7 @@
 |---|---:|---|
 | MCP 서버 | 14 | `00-mcp/` |
 | 플러그인 | 21 (6 격리) | `01-plugins/` |
-| 스킬 | 131 | `02-skills/` |
+| 스킬 | 132 | `02-skills/` |
 | 슬래시 커맨드 | 42 | `03-commands/` |
 | 에이전트 | 23 | `04-agents/` |
 | 셸 설정 | — | `08-shell/` |
@@ -24,12 +24,15 @@
 이제 이 킷은 도구까지만 챙기고, 일하는 방식은 설치한 사람이 직접 정한다. `install.sh` 는 `CLAUDE.md`·`rules/` 를 만들지도 덮어쓰지도 않는다.
 그 대신 설치한 스킬·커맨드·에이전트 사본 안의 `{{OWNER_NAME}}` 류 자리표시를 오너 정보로 채운다(이전에는 규칙 파일에만 채웠다).
 
-**합치기.** 기존 스킬은 그대로 두고, 두 번째 PC에만 있던 스킬을 더하거나 갱신했다. 첫 번째 PC에서 8월 이후 바뀐 스킬은 다음 빌드에서 합친다.
+**합치기.** 기존 스킬은 그대로 두고, 두 PC에서 8월 이후 새로 생기거나 바뀐 스킬을 더하거나 갱신했다.
 
 | 구분 | 스킬 |
 |---|---|
-| 새로 들어옴 | `lean-polish`(오너 규칙집·사례 파일은 빼고 담음) · `design-taste-frontend`(MIT, LICENSE 동봉) |
+| 새로 들어옴 | `lean-polish`(오너 규칙집·사례 파일은 빼고 담음) · `design-taste-frontend`(MIT, LICENSE 동봉) · `thinking-map`(첫 번째 PC) |
 | 다음 판으로 미룸(공개 전 사람 눈 검수에서 막힘) | `detail-page-studio`(실제 경쟁사 분석·실전 상품 기록·개인 세션 파일), `saas-motion-film`(예제가 실제 자사 제품, 글꼴 라이선스 미동봉), `team-build` · `team-save` · `team-load`(오너 팀 구성이 일반 규칙처럼 들어 있음), `no-ai-slop`(출처 확인 전) |
+| 다음 판으로 미룸(첫 번째 PC 검수) | `beast-campaign` · `davinci-plan` · `edna-design` · `ogilvy-copy` · `wolff-deal` · `wolff-legal`(오너 팀 페르소나·조직 카드에 묶인 직무 절차), `lean-ppt` · `lean-deck`(교육기관·고객사 실명, 날짜 붙은 실제 작업 기록), `lean-cut`(예제가 자사 제품 영상의 실제 편집 기록), `lean-rec`(실제 통화 상대 실명, 로컬 가상환경 동봉), `yt-thumbnail`(오너 얼굴 사진·채널 실측 기록), `branded-video-pipeline` · `capcut-subtitles`(실제 광고주 실명·작업 기록) |
+| 배포 제외(첫 번째 PC 검수) | 오너 클론 학습 절차, 오너 화법 v2·교육기관 전용 화법 스킬(기존 오너 화법 스킬과 같은 판정) |
+| 갱신을 보류하고 기존 판 유지 | `handoff`(새 판에 자사 제품명·페르소나 이름), `video-insert-keyframes-ima2`(새 판에 광고주 실명), 커맨드 `project-context-builder`(새 판에 오너 모델 선택 규칙) |
 | 배포 제외로 새로 판정 | `argo-*` · `aimee-ship-gate`(특정 앱 전용), 오너 화법 메일 스킬, `macgyver-fix` · `mac-clean`(오너 운영 절차), `ego-browser`(앱이 관리), `obsidian-save` · `obsidian-reference`(기존 판 유지) |
 
 `build-skills.sh` 는 이제 오너 원본 폴더(`~/Tools/skills`)를 가리키는 링크를 따라가 실제 파일을 담는다. 그 밖의 링크(OMC·codex 제공분)는 전처럼 뺀다.
