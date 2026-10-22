@@ -8,7 +8,8 @@
 #    bash install.sh --defaults            # 비대화형 (전부 기본값)
 #
 #  설치 대상:
-#    스킬 · 커맨드 · 에이전트 · 글로벌 규칙 · 플러그인 · MCP · 하네스 · 셸
+#    스킬 · 커맨드 · 에이전트 · 플러그인 · MCP · 출력 스타일 · 셸
+#    (글로벌 규칙·하네스는 2026-10-22부터 담지 않는다 — 일하는 규칙은 각자 정한다)
 #
 #  안전:
 #    · rm -rf 없음. 기존 파일은 .bak-<타임스탬프> 로 백업 후 교체.
@@ -81,43 +82,18 @@ case "$MODE" in
       read -r -p "    조율 담당 ($AGENT_MODERATOR): " _x; [ -n "$_x" ] && { AGENT_MODERATOR="$_x"; MODERATOR="$_x"; }
       read -r -p "    개발 ($AGENT_DEV): "        _x; [ -n "$_x" ] && AGENT_DEV="$_x"
       read -r -p "    디자인 ($AGENT_DESIGN): "   _x; [ -n "$_x" ] && AGENT_DESIGN="$_x"
-      echo "    (나머지는 기본 직무명 — ~/.claude/CLAUDE.md 에서 언제든 수정)"
+      echo "    (나머지는 기본 직무명)"
     fi
     ;;
   defaults) echo "  오너 정보: 전부 기본값" ;;
 esac
 
-mkdir -p "$CLAUDE_DIR/skills" "$CLAUDE_DIR/commands" "$CLAUDE_DIR/agents" "$CLAUDE_DIR/rules"
+mkdir -p "$CLAUDE_DIR/skills" "$CLAUDE_DIR/commands" "$CLAUDE_DIR/agents"
 
 backup() { [ -e "$1" ] && mv "$1" "${1}.bak-${TS}"; }
 
-# ---------- 1) 스킬 ----------
-echo ""
-echo "[1/8] 스킬"
-sc=0; bk=0
-for d in "$SCRIPT_DIR"/02-skills/*/; do
-  [ -d "$d" ] || continue
-  name="$(basename "$d")"; dest="$CLAUDE_DIR/skills/$name"
-  [ -e "$dest" ] && { backup "$dest"; bk=$((bk+1)); }
-  cp -R "$d" "$dest"; sc=$((sc+1))
-done
-echo "      설치 ${sc}개 / 기존 백업 ${bk}개"
-
-# ---------- 2) 커맨드 · 에이전트 ----------
-echo "[2/8] 커맨드 · 에이전트"
-cp -R "$SCRIPT_DIR"/03-commands/. "$CLAUDE_DIR/commands/" 2>/dev/null
-cp -R "$SCRIPT_DIR"/04-agents/.   "$CLAUDE_DIR/agents/"   2>/dev/null
-echo "      완료"
-
-# ---------- 3) 글로벌 규칙 (치환) ----------
-# fablize 보다 먼저 와야 한다. fablize 가 CLAUDE.md 끝에 블록을 덧붙이므로,
-# 순서가 뒤집히면 여기서 덮어써서 그 블록이 날아간다.
-echo "[3/8] 글로벌 규칙 (오너 정보로 치환)"
-if [ -d "$SCRIPT_DIR/06-rules" ]; then
-  TMP="$(mktemp -d)"
-  cp "$SCRIPT_DIR/06-rules/CLAUDE.template.md" "$TMP/CLAUDE.md"
-  cp "$SCRIPT_DIR"/06-rules/rules/*.md "$TMP/" 2>/dev/null
-
+# 패키지 안의 {{OWNER_NAME}} 같은 자리표시를 이 PC 오너 정보로 바꾼다(설치한 사본에만).
+fill_placeholders() {
   OWNER_NAME="$OWNER_NAME" OWNER_TITLE="$OWNER_TITLE" OWNER_HANDLE="$OWNER_HANDLE" \
   OWNER_EMAIL="$OWNER_EMAIL" GITHUB_ORG="$GITHUB_ORG" PROJECTS_ROOT="$PROJECTS_ROOT" \
   CODE_ROOT="$CODE_ROOT" VAULT_ROOT="$VAULT_ROOT" MODERATOR="$MODERATOR" \
@@ -125,40 +101,56 @@ if [ -d "$SCRIPT_DIR/06-rules" ]; then
   AGENT_DESIGN="$AGENT_DESIGN" AGENT_MARKETING="$AGENT_MARKETING" \
   AGENT_CONTENT="$AGENT_CONTENT" AGENT_EDU="$AGENT_EDU" AGENT_SALES="$AGENT_SALES" \
   AGENT_PLANNING="$AGENT_PLANNING" AGENT_RESEARCH="$AGENT_RESEARCH" \
-  FABLIZE_DIR="${FABLIZE_DIR:-$HOME/Code/fablize}" \
-  python3 - "$TMP" <<'PY'
-import os, re, sys, pathlib
+  python3 - "$@" <<'PY'
+import os, re, sys
 keys = ['OWNER_NAME','OWNER_TITLE','OWNER_HANDLE','OWNER_EMAIL','GITHUB_ORG',
         'PROJECTS_ROOT','CODE_ROOT','VAULT_ROOT','MODERATOR','AGENT_MODERATOR',
         'AGENT_DEV','AGENT_CORE','AGENT_DESIGN','AGENT_MARKETING','AGENT_CONTENT',
-        'AGENT_EDU','AGENT_SALES','AGENT_PLANNING','AGENT_RESEARCH','FABLIZE_DIR']
+        'AGENT_EDU','AGENT_SALES','AGENT_PLANNING','AGENT_RESEARCH']
 vals = {k: os.environ.get(k, '') for k in keys}
-for p in pathlib.Path(sys.argv[1]).glob('*.md'):
-    t = p.read_text(encoding='utf-8')
-    for k, v in vals.items():
-        t = t.replace('{{%s}}' % k, v)
-    # 값을 안 준 변수는 흔적을 남기지 않는다
-    t = re.sub(r'\{\{[A-Z_]+\}\}', '', t)
-    p.write_text(t, encoding='utf-8')
+TEXT = {'.md', '.txt', '.sh', '.py', '.js', '.mjs', '.json', '.yaml', '.yml', '.toml'}
+for top in sys.argv[1:]:
+    for dp, _, fns in os.walk(top):
+        for fn in fns:
+            p = os.path.join(dp, fn)
+            if os.path.splitext(fn)[1].lower() not in TEXT or os.path.islink(p):
+                continue
+            try:
+                t = open(p, encoding='utf-8').read()
+            except (UnicodeDecodeError, OSError):
+                continue
+            if '{{' not in t:
+                continue
+            o = t
+            for k, v in vals.items():
+                t = t.replace('{{%s}}' % k, v)
+            if t != o:
+                open(p, 'w', encoding='utf-8').write(t)
 PY
+}
 
-  backup "$CLAUDE_DIR/CLAUDE.md"
-  mv "$TMP/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
-  n=0
-  for f in "$TMP"/*.md; do
-    [ -f "$f" ] || continue
-    backup "$CLAUDE_DIR/rules/$(basename "$f")"
-    mv "$f" "$CLAUDE_DIR/rules/"; n=$((n+1))
-  done
-  rm -rf "$TMP"
-  echo "      CLAUDE.md + 규칙 ${n}개 (호칭: ${OWNER_TITLE})"
-  echo "      선택 규칙은 06-rules/rules/optional/ — 필요할 때만 직접 복사"
-else
-  echo "      06-rules 없음 — 건너뜀"
-fi
+# ---------- 1) 스킬 ----------
+echo ""
+echo "[1/6] 스킬"
+sc=0; bk=0
+for d in "$SCRIPT_DIR"/02-skills/*/; do
+  [ -d "$d" ] || continue
+  name="$(basename "$d")"; dest="$CLAUDE_DIR/skills/$name"
+  [ -e "$dest" ] && { backup "$dest"; bk=$((bk+1)); }
+  cp -R "$d" "$dest"; sc=$((sc+1))
+  fill_placeholders "$dest"
+done
+echo "      설치 ${sc}개 / 기존 백업 ${bk}개 (호칭: ${OWNER_TITLE})"
 
-# ---------- 4) 플러그인 ----------
-echo "[4/8] 플러그인"
+# ---------- 2) 커맨드 · 에이전트 ----------
+echo "[2/6] 커맨드 · 에이전트"
+cp -R "$SCRIPT_DIR"/03-commands/. "$CLAUDE_DIR/commands/" 2>/dev/null
+cp -R "$SCRIPT_DIR"/04-agents/.   "$CLAUDE_DIR/agents/"   2>/dev/null
+fill_placeholders "$CLAUDE_DIR/commands" "$CLAUDE_DIR/agents"
+echo "      완료"
+
+# ---------- 3) 플러그인 ----------
+echo "[3/6] 플러그인"
 if command -v claude >/dev/null 2>&1; then
   bash "$SCRIPT_DIR/01-plugins/install-plugins.sh" >/dev/null 2>&1 \
     && echo "      완료" \
@@ -167,8 +159,8 @@ else
   echo "      claude CLI 미발견 → 나중에 01-plugins/install-plugins.sh 실행"
 fi
 
-# ---------- 5) MCP ----------
-echo "[5/8] MCP (키 불필요한 것만 자동)"
+# ---------- 4) MCP ----------
+echo "[4/6] MCP (키 불필요한 것만 자동)"
 if command -v claude >/dev/null 2>&1; then
   claude mcp add context7            -- npx -y @upstash/context7-mcp@latest >/dev/null 2>&1
   claude mcp add sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking >/dev/null 2>&1
@@ -180,16 +172,13 @@ else
   echo "      claude CLI 미발견 → 00-mcp/README.md 참고"
 fi
 
-# ---------- 6) 하네스 ----------
-echo "[6/8] 작업 방식 하네스 (fablize)"
-bash "$SCRIPT_DIR/07-fablize/install-fablize.sh" global 2>&1 | sed 's/^/      /'
-
-# ---------- 7) 셸 ----------
-echo "[7/8] 한국어 출력 스타일"
+# ---------- 5) 출력 스타일 ----------
+echo "[5/6] 한국어 출력 스타일"
 bash "$SCRIPT_DIR/09-output-styles/install-output-styles.sh" 2>&1 | sed 's/^/      /'
 echo ""
 
-echo "[8/8] 셸 설정"
+# ---------- 6) 셸 ----------
+echo "[6/6] 셸 설정"
 bash "$SCRIPT_DIR/08-shell/install-shell.sh" 2>&1 | sed 's/^/      /'
 
 echo ""
@@ -198,9 +187,9 @@ echo "  설치 완료"
 echo ""
 echo "  1. Claude Code 를 재시작하세요."
 echo "  2. 새 터미널을 열거나: source ~/.zshrc"
-echo "  3. 호칭·에이전트 이름 수정: ~/.claude/CLAUDE.md"
-echo "  4. 키가 필요한 MCP: 00-mcp/README.md"
-echo "  5. 한국어 출력 스타일은 새 세션부터 적용됩니다."
+echo "  3. 키가 필요한 MCP: 00-mcp/README.md"
+echo "  4. 한국어 출력 스타일은 새 세션부터 적용됩니다."
+echo "  5. 일하는 규칙(~/.claude/CLAUDE.md)은 이 킷이 건드리지 않습니다. 각자 정하세요."
 echo ""
 echo "  기존 파일은 .bak-${TS} 로 백업했습니다."
 echo "=================================================="
